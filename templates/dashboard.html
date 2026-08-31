@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bank Dashboard</title>
+</head>
+
+<body>
+
+    <h1>Welcome to Banking System</h1>
+
+    <h2>Hello, {{ name }}</h2>
+
+    <hr>
+
+    {% if account %}
+
+        <h2>My Bank Account</h2>
+
+        <p>
+            Account Number:
+            {{ account.account_number }}
+        </p>
+
+        <p>
+            Account Type:
+            {{ account.account_type }}
+        </p>
+
+        <p>
+            Balance:
+            ₹{{ account.balance }}
+        </p>
+
+        <hr>
+
+        <h2>Banking Services</h2>
+
+        <ul>
+            <li>Account Details</li>
+            <li>Transactions</li>
+            <li>Deposit Money</li>
+            <li>Withdraw Money</li>
+            <li>Apply for Loan</li>
+            <li>Loan Status</li>
+        </ul>
+
+    {% else %}
+
+        <h2>No Bank Account Found</h2>
+
+        <p>
+            You need to create a bank account
+            before using banking services.
+        </p>
+
+        <a href="/create-account">
+            Create Bank Account
+        </a>
+
+    {% endif %}
+
+    <br><br>
+
+    <a href="/logout">Logout</a>
+
+</body>
+
+</html>
