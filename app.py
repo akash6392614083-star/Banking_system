@@ -303,8 +303,8 @@ def create_account():
 
 # ================= DEPOSIT =================
 
-@app.route("/deposit", methods=["GET", "POST"])
-def deposit():
+@app.route("/deposite", methods=["GET", "POST"])
+def deposite():
 
     if "user_id" not in session:
         return redirect(url_for("login"))
@@ -373,7 +373,7 @@ def deposit():
             return "Database Error: " + str(error)
 
     return render_template(
-        "deposit.html",
+        "deposite.html",
         balance=account["balance"]
     )
 
@@ -455,6 +455,252 @@ def withdraw():
     return render_template(
         "withdraw.html",
         balance=account["balance"]
+    )
+    
+    
+# ================= TRANSFER MONEY =================
+
+@app.route("/transfer", methods=["GET", "POST"])
+def transfer():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user_id = session["user_id"]
+
+    # Get sender's account
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT id, account_number, balance
+        FROM accounts
+        WHERE user_id = %s
+        LIMIT 1
+    """, (user_id,))
+
+    sender = cursor.fetchone()
+    cursor.close()
+
+    if not sender:
+        return redirect(url_for("create_account"))
+
+    if request.method == "POST":
+
+        receiver_account_number = request.form["receiver_account_number"]
+        amount = float(request.form["amount"])
+
+        # Basic validation
+        if amount <= 0:
+            return "Invalid transfer amount"
+
+        # Sender cannot transfer to himself
+        if receiver_account_number == sender["account_number"]:
+            return "You cannot transfer money to your own account"
+
+        # Check sender balance
+        if amount > float(sender["balance"]):
+            return "Insufficient balance"
+
+        try:
+
+            cursor = db.cursor(dictionary=True)
+
+            # Find receiver
+            cursor.execute("""
+                SELECT id, account_number
+                FROM accounts
+                WHERE account_number = %s
+                LIMIT 1
+            """, (receiver_account_number,))
+
+            receiver = cursor.fetchone()
+
+            if not receiver:
+                cursor.close()
+                return "Receiver account not found"
+
+            # --------------------------------
+            # 1. DEDUCT MONEY FROM SENDER
+            # --------------------------------
+
+            cursor.execute("""
+                UPDATE accounts
+                SET balance = balance - %s
+                WHERE id = %s
+            """, (
+                amount,
+                sender["id"]
+            ))
+
+            # --------------------------------
+            # 2. ADD MONEY TO RECEIVER
+            # --------------------------------
+
+            cursor.execute("""
+                UPDATE accounts
+                SET balance = balance + %s
+                WHERE id = %s
+            """, (
+                amount,
+                receiver["id"]
+            ))
+
+            # --------------------------------
+            # 3. RECORD SENDER TRANSACTION
+            # --------------------------------
+
+            cursor.execute("""
+                INSERT INTO transactions
+                (
+                    account_id,
+                    transaction_type,
+                    amount,
+                    description
+                )
+                VALUES (%s, %s, %s, %s)
+            """, (
+                sender["id"],
+                "Transfer",
+                amount,
+                "Money transferred to account "
+                + receiver_account_number
+            ))
+
+            # --------------------------------
+            # 4. RECORD RECEIVER TRANSACTION
+            # --------------------------------
+
+            cursor.execute("""
+                INSERT INTO transactions
+                (
+                    account_id,
+                    transaction_type,
+                    amount,
+                    description
+                )
+                VALUES (%s, %s, %s, %s)
+            """, (
+                receiver["id"],
+                "Transfer",
+                amount,
+                "Money received from account "
+                + sender["account_number"]
+            ))
+
+            # --------------------------------
+            # 5. SAVE EVERYTHING
+            # --------------------------------
+
+            db.commit()
+
+            cursor.close()
+
+            return redirect(url_for("dashboard"))
+
+        except mysql.connector.Error as error:
+
+            db.rollback()
+
+            return "Database Error: " + str(error)
+
+    return render_template(
+        "transfer.html",
+        balance=sender["balance"],
+        account_number=sender["account_number"]
+    )
+    
+# ================= TRANSACTION HISTORY =================
+
+@app.route("/transactions")
+def transactions():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user_id = session["user_id"]
+
+    cursor = db.cursor(dictionary=True)
+
+    query = """
+        SELECT
+            transactions.transaction_type,
+            transactions.amount,
+            transactions.description,
+            transactions.transaction_date
+        FROM transactions
+        JOIN accounts
+        ON transactions.account_id = accounts.id
+        WHERE accounts.user_id = %s
+        ORDER BY transactions.transaction_date DESC
+    """
+
+    cursor.execute(query, (user_id,))
+
+    transaction_list = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template(
+        "transactions.html",
+        transactions=transaction_list
+    )
+    
+# ================= ACCOUNT DETAILS =================
+
+@app.route("/account-details")
+def account_details():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user_id = session["user_id"]
+
+    cursor = db.cursor(dictionary=True)
+
+    query = """
+        SELECT
+            users.full_name,
+            users.email,
+            users.phone,
+
+            profiles.date_of_birth,
+            profiles.gender,
+            profiles.address,
+            profiles.city,
+            profiles.state,
+            profiles.pincode,
+            profiles.occupation,
+
+            accounts.account_number,
+            accounts.account_type,
+            accounts.balance,
+            accounts.created_at
+            
+
+        FROM users
+
+        JOIN profiles
+        ON users.id = profiles.user_id
+
+        JOIN accounts
+        ON users.id = accounts.user_id
+
+        WHERE users.id = %s
+        LIMIT 1
+    """
+
+    cursor.execute(query, (user_id,))
+
+    account = cursor.fetchone()
+
+    cursor.close()
+
+    if not account:
+        return redirect(url_for("create_account"))
+
+    return render_template(
+        "account_details.html",
+        account=account
     )
 
 # ================= LOGOUT =================

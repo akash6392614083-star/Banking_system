@@ -1,17 +1,920 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Banking System</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banking System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1F3A;
+    --royal:#1E4D8F;
+    --gold:#D4AF37;
+    --bg:#F5F7FA;
+    --card:#FFFFFF;
+    --text:#172033;
+    --text-secondary:#667085;
+    --border:#E4E7EC;
+
+    --radius-sm:10px;
+    --radius-md:14px;
+    --radius-lg:16px;
+
+    --shadow-sm:0 1px 2px rgba(11,31,58,0.06);
+    --shadow-md:0 8px 24px rgba(11,31,58,0.08);
+
+    --container:1160px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{display:block;max-width:100%;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;margin:0;padding:0;}
+  h1,h2,h3,p{margin:0;}
+
+  .wrap{
+    width:100%;
+    max-width:var(--container);
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  .btn:focus-visible{
+    outline:2px solid var(--royal);
+    outline-offset:3px;
+    border-radius:6px;
+  }
+
+  /* ---------- Buttons (shared component) ---------- */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    height:48px;
+    padding:0 24px;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:600;
+    border-radius:var(--radius-sm);
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
+    white-space:nowrap;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{
+    background:var(--navy);
+    color:#fff;
+  }
+  .btn-primary:hover{background:var(--royal);}
+  .btn-secondary{
+    background:#fff;
+    color:var(--navy);
+    border-color:var(--navy);
+  }
+  .btn-secondary:hover{
+    background:var(--navy);
+    color:#fff;
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--navy);
+    border-color:var(--border);
+  }
+  .btn-ghost:hover{border-color:var(--navy);}
+  .btn-sm{height:40px;padding:0 18px;font-size:14px;}
+
+  /* ---------- Section headings (shared component) ---------- */
+  .section-heading{
+    max-width:560px;
+    margin:0 0 44px;
+  }
+  .section-heading h2{
+    font-size:clamp(26px, 3vw, 34px);
+    font-weight:700;
+    color:var(--navy);
+    letter-spacing:-0.01em;
+  }
+  .section-heading p{
+    margin-top:12px;
+    font-size:16px;
+    color:var(--text-secondary);
+  }
+  .section-heading.center{margin-left:auto;margin-right:auto;text-align:center;}
+
+  section{padding:88px 0;}
+
+  /* ---------- Navbar ---------- */
+  .navbar{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .navbar .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    height:76px;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:20px;
+    font-weight:700;
+    color:var(--navy);
+    letter-spacing:-0.01em;
+  }
+  .logo .mark{
+    width:34px;height:34px;
+    border-radius:9px;
+    background:var(--navy);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .nav-links{
+    display:flex;
+    align-items:center;
+    gap:36px;
+  }
+  .nav-links a:not(.btn){
+    font-size:15px;
+    font-weight:500;
+    color:var(--text);
+    padding:6px 2px;
+    border-bottom:2px solid transparent;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .nav-links a:not(.btn):hover{
+    color:var(--royal);
+    border-bottom-color:var(--gold);
+  }
+  .nav-actions{display:flex;align-items:center;gap:14px;}
+  .nav-toggle{
+    display:none;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:8px;
+  }
+  .nav-toggle span{
+    display:block;
+    width:22px;height:2px;
+    background:var(--navy);
+    margin:5px 0;
+    border-radius:2px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:88px 0 96px;
+  }
+  .hero .wrap{
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    gap:56px;
+    align-items:center;
+  }
+  .hero-eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--royal);
+    background:#EAF1FB;
+    border-radius:20px;
+    padding:7px 14px;
+    margin-bottom:20px;
+  }
+  .hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+  .hero h1{
+    font-size:clamp(36px, 4.6vw, 54px);
+    font-weight:800;
+    color:var(--navy);
+    letter-spacing:-0.02em;
+    line-height:1.1;
+  }
+  .hero .headline{
+    margin-top:18px;
+    font-size:19px;
+    font-weight:500;
+    color:var(--text);
+  }
+  .hero p.desc{
+    margin-top:16px;
+    font-size:16px;
+    color:var(--text-secondary);
+    max-width:480px;
+  }
+  .hero-cta{
+    margin-top:34px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .hero-stats{
+    display:flex;
+    gap:32px;
+    margin-top:48px;
+    padding-top:32px;
+    border-top:1px solid var(--border);
+  }
+  .hero-stats div strong{
+    display:block;
+    font-size:22px;
+    font-weight:700;
+    color:var(--navy);
+  }
+  .hero-stats div span{
+    font-size:13px;
+    color:var(--text-secondary);
+  }
+
+  /* ---------- Hero visual: bank card + panel ---------- */
+  .hero-visual{
+    position:relative;
+    height:420px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .visual-panel{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(160deg, #0B1F3A 0%, #16305B 60%, #1E4D8F 100%);
+    border-radius:24px;
+    box-shadow:var(--shadow-md);
+    overflow:hidden;
+  }
+  .visual-panel::before{
+    content:"";
+    position:absolute;
+    width:340px;height:340px;
+    border-radius:50%;
+    border:1px solid rgba(212,175,55,0.25);
+    top:-90px;right:-90px;
+  }
+  .visual-panel::after{
+    content:"";
+    position:absolute;
+    width:220px;height:220px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.12);
+    bottom:-60px;left:-60px;
+  }
+  .bank-card{
+    position:relative;
+    width:300px;
+    height:180px;
+    border-radius:16px;
+    padding:22px;
+    background:linear-gradient(135deg, #14294C 0%, #1E4D8F 100%);
+    box-shadow:0 20px 40px rgba(0,0,0,0.35);
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    z-index:2;
+  }
+  .bank-card .row-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+  }
+  .bank-card .chip{
+    width:36px;height:26px;
+    border-radius:5px;
+    background:linear-gradient(135deg, var(--gold), #E9CE7A);
+  }
+  .bank-card .brand{
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:0.02em;
+  }
+  .bank-card .number{
+    font-size:17px;
+    letter-spacing:0.14em;
+    font-weight:500;
+  }
+  .bank-card .row-bottom{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    font-size:11px;
+    color:rgba(255,255,255,0.7);
+  }
+  .bank-card .row-bottom strong{
+    display:block;
+    font-size:13px;
+    color:#fff;
+    font-weight:600;
+    letter-spacing:0.02em;
+  }
+  .float-badge{
+    position:absolute;
+    z-index:3;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:var(--shadow-md);
+    padding:12px 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .float-badge.badge-shield{
+    top:36px;
+    left:34px;
+  }
+  .float-badge.badge-balance{
+    bottom:36px;
+    right:22px;
+  }
+  .float-badge .icon-circle{
+    width:34px;height:34px;
+    border-radius:9px;
+    background:#EAF1FB;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .float-badge .icon-circle.gold{background:#FBF3DE;}
+  .float-badge .label{font-size:11px;color:var(--text-secondary);}
+  .float-badge .value{font-size:14px;font-weight:700;color:var(--navy);}
+
+  /* ---------- Trust section ---------- */
+  .trust{background:var(--bg);}
+  .trust-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:20px;
+  }
+  .trust-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:28px 24px;
+    box-shadow:var(--shadow-sm);
+  }
+  .trust-card .icon-circle{
+    width:44px;height:44px;
+    border-radius:11px;
+    background:#EAF1FB;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:18px;
+  }
+  .trust-card h3{
+    font-size:17px;
+    font-weight:700;
+    color:var(--navy);
+    margin-bottom:8px;
+  }
+  .trust-card p{
+    font-size:14.5px;
+    color:var(--text-secondary);
+  }
+
+  /* ---------- Services ---------- */
+  .services{background:var(--card);}
+  .services-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:22px;
+  }
+  .service-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:26px;
+    transition:box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+  }
+  .service-card:hover{
+    box-shadow:var(--shadow-md);
+    transform:translateY(-3px);
+    border-color:#D8E2F0;
+  }
+  .service-card .icon-circle{
+    width:42px;height:42px;
+    border-radius:10px;
+    background:#0B1F3A;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:16px;
+  }
+  .service-card h3{
+    font-size:16.5px;
+    font-weight:700;
+    color:var(--navy);
+    margin-bottom:8px;
+  }
+  .service-card p{
+    font-size:14.5px;
+    color:var(--text-secondary);
+  }
+
+  /* ---------- Security section ---------- */
+  .security{background:var(--bg);}
+  .security .wrap{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:56px;
+    align-items:center;
+  }
+  .security-visual{
+    height:320px;
+    border-radius:20px;
+    background:linear-gradient(160deg, #0B1F3A 0%, #16305B 100%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:var(--shadow-md);
+    position:relative;
+    overflow:hidden;
+  }
+  .security-visual::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 30% 20%, rgba(212,175,55,0.15), transparent 55%);
+  }
+  .security h2{
+    font-size:clamp(26px, 3vw, 34px);
+    font-weight:700;
+    color:var(--navy);
+    letter-spacing:-0.01em;
+    margin-bottom:16px;
+  }
+  .security p.lead{
+    font-size:16px;
+    color:var(--text-secondary);
+    max-width:520px;
+    margin-bottom:28px;
+  }
+  .security-points{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .security-point{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+  }
+  .security-point .icon-circle{
+    width:32px;height:32px;
+    border-radius:8px;
+    background:#FBF3DE;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    margin-top:2px;
+  }
+  .security-point strong{
+    display:block;
+    font-size:15px;
+    color:var(--text);
+    font-weight:600;
+  }
+  .security-point span{
+    font-size:14px;
+    color:var(--text-secondary);
+  }
+
+  /* ---------- CTA ---------- */
+  .cta{
+    background:var(--navy);
+    background-image:radial-gradient(circle at 85% 20%, rgba(212,175,55,0.14), transparent 55%);
+  }
+  .cta .wrap{
+    text-align:center;
+    max-width:640px;
+  }
+  .cta h2{
+    font-size:clamp(26px, 3.4vw, 36px);
+    font-weight:700;
+    color:#fff;
+    letter-spacing:-0.01em;
+  }
+  .cta p{
+    margin-top:14px;
+    font-size:16px;
+    color:rgba(255,255,255,0.72);
+  }
+  .cta .btn{margin-top:30px;}
+  .cta .btn-primary{
+    background:var(--gold);
+    color:#0B1F3A;
+  }
+  .cta .btn-primary:hover{background:#c39f2f;}
+
+  /* ---------- Footer ---------- */
+  footer{
+    background:var(--navy);
+    color:rgba(255,255,255,0.72);
+    padding:56px 0 28px;
+  }
+  .footer-top{
+    display:flex;
+    justify-content:space-between;
+    gap:40px;
+    padding-bottom:36px;
+    border-bottom:1px solid rgba(255,255,255,0.12);
+  }
+  .footer-brand .logo{color:#fff;}
+  .footer-brand .logo .mark{background:var(--gold);}
+  .footer-brand p{
+    margin-top:10px;
+    font-size:14px;
+    color:rgba(255,255,255,0.6);
+  }
+  .footer-links{
+    display:flex;
+    gap:64px;
+  }
+  .footer-links h4{
+    font-size:13px;
+    font-weight:600;
+    color:#fff;
+    margin-bottom:14px;
+  }
+  .footer-links ul{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .footer-links a{
+    font-size:14px;
+    color:rgba(255,255,255,0.65);
+    transition:color .15s ease;
+  }
+  .footer-links a:hover{color:var(--gold);}
+  .footer-bottom{
+    padding-top:24px;
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    color:rgba(255,255,255,0.5);
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px){
+    .hero .wrap{grid-template-columns:1fr;}
+    .hero-visual{height:340px;order:-1;}
+    .trust-grid{grid-template-columns:repeat(2, 1fr);}
+    .services-grid{grid-template-columns:repeat(2, 1fr);}
+    .security .wrap{grid-template-columns:1fr;}
+    .security-visual{height:240px;order:-1;}
+    .footer-top{flex-direction:column;}
+    .footer-links{gap:40px;}
+  }
+
+  @media (max-width: 720px){
+    .nav-links{
+      position:absolute;
+      top:76px;
+      left:0;
+      right:0;
+      background:#fff;
+      border-bottom:1px solid var(--border);
+      flex-direction:column;
+      align-items:flex-start;
+      gap:0;
+      padding:8px 24px 20px;
+      display:none;
+      box-shadow:var(--shadow-md);
+    }
+    .nav-links.open{display:flex;}
+    .nav-links a:not(.btn){
+      width:100%;
+      padding:12px 0;
+      border-bottom:1px solid var(--border);
+    }
+    .nav-actions .btn-ghost{display:none;}
+    .nav-toggle{display:block;}
+    section{padding:64px 0;}
+    .trust-grid{grid-template-columns:1fr;}
+    .services-grid{grid-template-columns:1fr;}
+    .hero-stats{flex-wrap:wrap;row-gap:20px;}
+    .footer-links{flex-direction:column;gap:24px;}
+    .footer-bottom{flex-direction:column;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;animation:none !important;}
+  }
+</style>
 </head>
 <body>
 
-    <h1>Welcome to Our Banking System</h1>
+<header class="navbar">
+  <div class="wrap">
+    <a href="/" class="logo">
+      <span class="mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L3 7v2h18V7l-9-5z" fill="#D4AF37"/>
+          <path d="M4 10h2v9H4v-9zm5 0h2v9H9v-9zm5 0h2v9h-2v-9zm5 0h2v9h-2v-9z" fill="#FFFFFF"/>
+          <path d="M3 21h18v2H3v-2z" fill="#FFFFFF"/>
+        </svg>
+      </span>
+      SecureBank
+    </a>
 
-    <p>Manage your account, transactions and loans easily.</p>
+    <nav class="nav-links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/services">Services</a>
+      <a href="/contact">Contact</a>
+    </nav>
 
-    <a href="/register">Register</a>
-    <br><br>
-    <a href="/login">Login</a>
+    <div class="nav-actions">
+      <a href="/login" class="btn btn-ghost btn-sm">Login</a>
+      <a href="/register" class="btn btn-primary btn-sm">Register</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="hero-eyebrow"><span class="dot"></span>FDIC-style secure banking</span>
+      <h1>Welcome to SecureBank</h1>
+      <p class="headline">Banking made simple, secure, and built around you.</p>
+      <p class="desc">Manage your money with confidence. SecureBank gives you simple, secure tools to manage your account, move money, and stay in control of your finances.</p>
+      <div class="hero-cta">
+        <a href="/register" class="btn btn-primary">Register</a>
+        <a href="/login" class="btn btn-secondary">Login to Your Account</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <strong>24/7</strong>
+          <span>Account access</span>
+        </div>
+        <div>
+          <strong>100%</strong>
+          <span>Digital onboarding</span>
+        </div>
+        <div>
+          <strong>Secure</strong>
+          <span>By design</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="visual-panel"></div>
+      <div class="float-badge badge-shield">
+        <span class="icon-circle gold">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" stroke="#D4AF37" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </span>
+        <span>
+          <span class="label">Protection</span>
+          <span class="value">Secure by design</span>
+        </span>
+      </div>
+      <div class="bank-card">
+        <div class="row-top">
+          <span class="brand">SecureBank</span>
+          <span class="chip"></span>
+        </div>
+        <div class="number">•••• •••• •••• 4821</div>
+        <div class="row-bottom">
+          <span><strong>A. Sharma</strong>Account holder</span>
+          <span><strong>05/29</strong>Valid thru</span>
+        </div>
+      </div>
+      <div class="float-badge badge-balance">
+        <span class="icon-circle">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 10h18M3 6h18v12H3V6z" stroke="#1E4D8F" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </span>
+        <span>
+          <span class="label">Available balance</span>
+          <span class="value">$12,480.50</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="wrap">
+    <div class="section-heading">
+      <h2>Banking you can trust.</h2>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-card">
+        <span class="icon-circle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" stroke="#1E4D8F" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </span>
+        <h3>Secure Banking</h3>
+        <p>Your account and financial information are protected with secure banking practices.</p>
+      </div>
+      <div class="trust-card">
+        <span class="icon-circle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 7l4-4M4 7l4 4M20 17H4M20 17l-4-4M20 17l-4 4" stroke="#1E4D8F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <h3>Easy Transfers</h3>
+        <p>Transfer money quickly and conveniently whenever you need it.</p>
+      </div>
+      <div class="trust-card">
+        <span class="icon-circle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#1E4D8F" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="#1E4D8F" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </span>
+        <h3>24/7 Access</h3>
+        <p>Manage your banking and account information whenever you need it.</p>
+      </div>
+      <div class="trust-card">
+        <span class="icon-circle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 19V5m0 14h16M8 15v-4m4 4V9m4 6v-7" stroke="#1E4D8F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <h3>Transparent Transactions</h3>
+        <p>Keep track of your account activity and transaction history with ease.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services">
+  <div class="wrap">
+    <div class="section-heading">
+      <h2>Everything you need in one place.</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="icon-circle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="#fff" stroke-width="1.6"/><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+        <h3>Personal Banking</h3>
+        <p>Simple tools for managing your everyday banking.</p>
+      </div>
+      <div class="service-card">
+        <span class="icon-circle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 7l4-4M4 7l4 4M20 17H4M20 17l-4-4M20 17l-4 4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <h3>Money Transfer</h3>
+        <p>Send money securely and conveniently.</p>
+      </div>
+      <div class="service-card">
+        <span class="icon-circle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="#fff" stroke-width="1.6"/><path d="M3 10h18" stroke="#fff" stroke-width="1.6"/></svg>
+        </span>
+        <h3>Deposit &amp; Withdraw</h3>
+        <p>Manage your account balance with ease.</p>
+      </div>
+      <div class="service-card">
+        <span class="icon-circle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 19V5m0 14h16M8 15v-4m4 4V9m4 6v-7" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <h3>Transaction History</h3>
+        <p>View and monitor your banking activity.</p>
+      </div>
+      <div class="service-card">
+        <span class="icon-circle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#fff" stroke-width="1.6"/><path d="M12 8v4l2.5 2" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+        <h3>Account Management</h3>
+        <p>Access and manage your personal and account information.</p>
+      </div>
+      <div class="service-card">
+        <span class="icon-circle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 6.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5 2.2 3 5 3.5 5 1.6 5 3.5-2.2 3.5-5 3.5-5-1.6-5-3.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+        <h3>Loan Services</h3>
+        <p>Explore available banking and loan services.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="security">
+  <div class="wrap">
+    <div class="security-visual">
+      <svg width="120" height="120" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" stroke="#D4AF37" stroke-width="1.3"/>
+        <path d="M9 12l2 2 4-4.5" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="security-copy">
+      <h2>Your security comes first.</h2>
+      <p class="lead">SecureBank is built around secure account management and transparent banking, so you always know what's happening with your money.</p>
+      <div class="security-points">
+        <div class="security-point">
+          <span class="icon-circle">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="2" stroke="#D4AF37" stroke-width="1.6"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#D4AF37" stroke-width="1.6"/></svg>
+          </span>
+          <span>
+            <strong>Protected account access</strong>
+            <span>Your login and account details are safeguarded at every step.</span>
+          </span>
+        </div>
+        <div class="security-point">
+          <span class="icon-circle">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 19V5m0 14h16M8 15v-4m4 4V9m4 6v-7" stroke="#D4AF37" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span>
+            <strong>Clear activity tracking</strong>
+            <span>Every transaction is recorded and visible in your account history.</span>
+          </span>
+        </div>
+        <div class="security-point">
+          <span class="icon-circle">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#D4AF37" stroke-width="1.6"/><path d="M12 8v4l2.5 2" stroke="#D4AF37" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </span>
+          <span>
+            <strong>Ongoing monitoring</strong>
+            <span>Account activity is reviewed as part of responsible banking practice.</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <h2>Ready to take control of your banking?</h2>
+    <p>Open your SecureBank account today and experience simpler, smarter banking.</p>
+    <a href="/register" class="btn btn-primary">Registert</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="logo">
+          <span class="mark">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L3 7v2h18V7l-9-5z" fill="#0B1F3A"/>
+              <path d="M4 10h2v9H4v-9zm5 0h2v9H9v-9zm5 0h2v9h-2v-9zm5 0h2v9h-2v-9z" fill="#0B1F3A"/>
+              <path d="M3 21h18v2H3v-2z" fill="#0B1F3A"/>
+            </svg>
+          </span>
+          SecureBank
+        </a>
+        <p>Simple. Secure. Reliable.</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms &amp; Conditions</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Account</h4>
+          <ul>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 SecureBank. All rights reserved.</span>
+      <span>Built for secure, everyday banking.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  var navToggle = document.getElementById('navToggle');
+  var navLinks = document.getElementById('navLinks');
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', function () {
+      var isOpen = navLinks.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  }
+</script>
 
 </body>
 </html>

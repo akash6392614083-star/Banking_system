@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Transfer Money</title>
+</head>
+
+<body>
+
+    <h1>Transfer Money</h1>
+
+    <hr>
+
+    <h2>Current Balance</h2>
+
+    <p>
+        ₹{{ balance }}
+    </p>
+
+    <form method="POST">
+
+        <label>
+            Receiver Account Number:
+        </label>
+
+        <br>
+
+        <input
+            type="text"
+            name="receiver_account_number"
+            required
+        >
+
+        <br><br>
+
+        <label>
+            Amount:
+        </label>
+
+        <br>
+
+        <input
+            type="number"
+            name="amount"
+            step="0.01"
+            min="0.01"
+            required
+        >
+
+        <br><br>
+
+        <button type="submit">
+            Transfer Money
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="/dashboard">
+        Back to Dashboard
+    </a>
+
+</body>
+
+</html>

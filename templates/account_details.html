@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Account Details</title>
+
+</head>
+
+<body>
+
+    <h1>Account Details</h1>
+
+    <hr>
+
+    <h2>Personal Information</h2>
+
+    <p>
+        <strong>Full Name:</strong>
+        {{ account.full_name }}
+    </p>
+
+    <p>
+        <strong>Email:</strong>
+        {{ account.email }}
+    </p>
+
+    <p>
+        <strong>Phone:</strong>
+        {{ account.phone }}
+    </p>
+
+    <p>
+        <strong>Date of Birth:</strong>
+        {{ account.date_of_birth }}
+    </p>
+
+    <p>
+        <strong>Gender:</strong>
+        {{ account.gender }}
+    </p>
+
+    <p>
+        <strong>Address:</strong>
+        {{ account.address }}
+    </p>
+
+    <p>
+        <strong>City:</strong>
+        {{ account.city }}
+    </p>
+
+    <p>
+        <strong>State:</strong>
+        {{ account.state }}
+    </p>
+
+    <p>
+        <strong>Pincode:</strong>
+        {{ account.pincode }}
+    </p>
+
+    <p>
+        <strong>Occupation:</strong>
+        {{ account.occupation }}
+    </p>
+
+    <hr>
+
+    <h2>Bank Account Information</h2>
+
+    <p>
+        <strong>Account Number:</strong>
+        {{ account.account_number }}
+    </p>
+
+    <p>
+        <strong>Account Type:</strong>
+        {{ account.account_type }}
+    </p>
+
+    <p>
+        <strong>Created-at:</strong>
+        {{ account.created_at }}
+    </p>
+
+
+    <p>
+        <strong>Current Balance:</strong>
+        ₹{{ account.balance }}
+    </p>
+
+    <br>
+
+    <a href="/dashboard">
+        Back to Dashboard
+    </a>
+
+</body>
+
+</html>

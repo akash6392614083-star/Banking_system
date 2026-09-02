@@ -1,30 +1,377 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login · SecureBank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0B1F3A;
+    --royal: #1E4D8F;
+    --gold: #D4AF37;
+    --bg: #F5F7FA;
+    --white: #FFFFFF;
+    --text: #172033;
+    --text-secondary: #667085;
+    --border: #E4E7EC;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .page {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+  }
+
+  /* ---------- Left: brand panel ---------- */
+  .brand-panel {
+    position: relative;
+    background: linear-gradient(160deg, var(--navy) 0%, var(--royal) 100%);
+    color: var(--white);
+    padding: 64px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  .brand-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 85% 12%, rgba(212,175,55,0.10), transparent 45%),
+      radial-gradient(circle at 10% 85%, rgba(255,255,255,0.06), transparent 40%);
+    pointer-events: none;
+  }
+
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: 0.2px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-mark svg { flex-shrink: 0; }
+
+  .brand-copy {
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-copy h1 {
+    font-size: 34px;
+    line-height: 1.25;
+    font-weight: 700;
+    margin: 0 0 16px;
+    letter-spacing: -0.3px;
+  }
+
+  .brand-copy p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.78);
+    margin: 0;
+  }
+
+  .brand-illustration {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 40px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-footnote {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- Right: form panel ---------- */
+  .form-panel {
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 44px 40px;
+    box-shadow: 0 1px 2px rgba(11,31,58,0.04), 0 12px 32px rgba(11,31,58,0.06);
+  }
+
+  .login-card h2 {
+    margin: 0 0 6px;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text);
+  }
+
+  .login-card .subtitle {
+    margin: 0 0 32px;
+    font-size: 15px;
+    color: var(--text-secondary);
+  }
+
+  .flash-error {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: #FCF1F0;
+    border: 1px solid #F1C6C2;
+    color: #8A2C24;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+  }
+
+  .flash-error svg { flex-shrink: 0; margin-top: 1px; }
+
+  .field {
+    margin-bottom: 20px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .field input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 14px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .field input::placeholder {
+    color: #98A2B3;
+  }
+
+  .field input:focus {
+    outline: none;
+    border-color: var(--royal);
+    box-shadow: 0 0 0 3px rgba(30,77,143,0.12);
+  }
+
+  .submit-btn {
+    width: 100%;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    background: var(--navy);
+    border: none;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 6px;
+    cursor: pointer;
+    transition: background-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+  }
+
+  .submit-btn:hover {
+    background: var(--royal);
+    box-shadow: 0 6px 16px rgba(30,77,143,0.28);
+  }
+
+  .submit-btn:active {
+    transform: translateY(1px);
+  }
+
+  .register-link {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 24px;
+  }
+
+  .register-link a {
+    color: var(--royal);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .register-link a:hover {
+    text-decoration: underline;
+  }
+
+  .security-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 28px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+  }
+
+  .security-note svg { flex-shrink: 0; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .page {
+      grid-template-columns: 1fr;
+    }
+    .brand-panel {
+      display: none;
+    }
+    .form-panel {
+      padding: 24px 16px;
+      min-height: 100vh;
+    }
+    .login-card {
+      padding: 32px 24px;
+      box-shadow: none;
+      border: none;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .login-card { padding: 28px 18px; }
+  }
+</style>
 </head>
 <body>
 
-    <h1>Login</h1>
+  <div class="page">
 
-    <form action="/login" method="POST">
+    <!-- Left: brand / security panel -->
+    <aside class="brand-panel">
+      <div class="brand-mark">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L4 5v6c0 5.25 3.4 9.74 8 11 4.6-1.26 8-5.75 8-11V5l-8-3z" fill="#D4AF37"/>
+        </svg>
+        SecureBank
+      </div>
 
-    <label>Email:</label>
-    <input type="email" name="email" required>
+      <div>
+        <div class="brand-copy">
+          <h1>Welcome back to SecureBank</h1>
+          <p>Securely access your account and manage your banking from one place.</p>
+        </div>
 
-    <br><br>
+        <div class="brand-illustration">
+          <svg width="220" height="220" viewBox="0 0 220 220" fill="none">
+            <circle cx="110" cy="110" r="100" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <circle cx="110" cy="110" r="76" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+            <g transform="translate(58,52)">
+              <rect x="0" y="24" width="104" height="72" rx="12" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.18)"/>
+              <rect x="0" y="40" width="104" height="14" fill="rgba(255,255,255,0.14)"/>
+              <rect x="14" y="70" width="34" height="8" rx="2" fill="rgba(255,255,255,0.30)"/>
+              <path d="M52 0L14 16v18c0 20 16 36 38 42 22-6 38-22 38-42V16L52 0z"
+                    fill="#0B1F3A" stroke="#D4AF37" stroke-width="2" transform="translate(0,-6)"/>
+              <path d="M44 30l6 6 12-12" stroke="#D4AF37" stroke-width="2.5" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round" transform="translate(0,-6)"/>
+            </g>
+          </svg>
+        </div>
+      </div>
 
-    <label>Password:</label>
-    <input type="password" name="password" required>
+      <div class="brand-footnote">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L4 5v6c0 5.25 3.4 9.74 8 11 4.6-1.26 8-5.75 8-11V5l-8-3z" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+        </svg>
+        Bank-grade encryption on every session
+      </div>
+    </aside>
 
-    <br><br>
+    <!-- Right: login form -->
+    <main class="form-panel">
+      <div class="login-card">
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Login to your SecureBank account</p>
 
-    <button type="submit">Login</button>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="flash-error">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="#8A2C24" stroke-width="1.5"/>
+                  <path d="M12 8v5" stroke="#8A2C24" stroke-width="1.5" stroke-linecap="round"/>
+                  <circle cx="12" cy="16" r="1" fill="#8A2C24"/>
+                </svg>
+                <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
 
-</form>
-    <br>
+        <form action="/login" method="POST">
 
-    <a href="/register">Don't have an account? Register</a>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          </div>
+
+          <button type="submit" class="submit-btn">Login</button>
+
+        </form>
+
+        <div class="register-link">
+          Don't have an account? <a href="/register">Create one</a>
+        </div>
+
+        <div class="security-note">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <rect x="5" y="11" width="14" height="9" rx="2" stroke="#667085" stroke-width="1.5"/>
+            <path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="#667085" stroke-width="1.5"/>
+          </svg>
+          Your banking information is protected.
+        </div>
+      </div>
+    </main>
+
+  </div>
 
 </body>
 </html>
