@@ -1,101 +1,910 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Bank Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard · SecureBank</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0B1F3A;
+            --royal: #1E4D8F;
+            --gold: #D4AF37;
+            --bg: #F5F7FA;
+            --white: #FFFFFF;
+            --text: #172033;
+            --text-secondary: #667085;
+            --border: #E4E7EC;
+
+            --radius: 14px;
+            --radius-sm: 10px;
+            --shadow: 0 1px 2px rgba(11, 31, 58, 0.04), 0 4px 16px rgba(11, 31, 58, 0.06);
+            --shadow-lg: 0 8px 24px rgba(11, 31, 58, 0.10);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; margin: 0; padding: 0; }
+        button { font-family: inherit; }
+
+        /* ---------- Layout shell ---------- */
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ---------- Sidebar ---------- */
+        .sidebar {
+            width: 264px;
+            flex-shrink: 0;
+            background: var(--navy);
+            color: #E7ECF5;
+            display: flex;
+            flex-direction: column;
+            padding: 28px 18px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 10px 28px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-logo .mark {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--gold), #B8932E);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo .mark svg { width: 18px; height: 18px; }
+
+        .sidebar-logo .brand {
+            font-weight: 700;
+            font-size: 16.5px;
+            letter-spacing: -0.01em;
+            color: #FFFFFF;
+        }
+
+        .nav-section-label {
+            font-size: 11.5px;
+            color: #8CA0BF;
+            padding: 0 10px;
+            margin: 4px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 14.5px;
+            font-weight: 500;
+            color: #C6D2E5;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .nav-item svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            opacity: 0.85;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #FFFFFF;
+        }
+
+        .nav-item.active {
+            background: var(--royal);
+            color: #FFFFFF;
+        }
+
+        .nav-item.disabled {
+            color: #5F7290;
+            cursor: default;
+        }
+
+        .nav-item.disabled:hover { background: none; }
+
+        .nav-item .soon-tag {
+            margin-left: auto;
+            font-size: 10.5px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.08);
+            color: #9FB1CC;
+            padding: 2px 7px;
+            border-radius: 20px;
+        }
+
+        .sidebar-spacer { flex: 1; }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 14px;
+            margin-top: 14px;
+        }
+
+        .logout-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 14.5px;
+            font-weight: 500;
+            color: #E7ECF5;
+            transition: background 0.15s ease;
+        }
+
+        .logout-link:hover { background: rgba(255, 255, 255, 0.08); }
+        .logout-link svg { width: 18px; height: 18px; }
+
+        /* ---------- Mobile nav toggle ---------- */
+        .mobile-topbar {
+            display: none;
+        }
+
+        .sidebar-backdrop {
+            display: none;
+        }
+
+        /* ---------- Main column ---------- */
+        .main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 36px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topbar-greeting { font-size: 15.5px; font-weight: 500; color: var(--text); }
+        .topbar-greeting .sub { display: block; font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-top: 2px; }
+
+        .profile-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px 6px 6px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--royal);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .profile-chip .profile-name { font-size: 13.5px; font-weight: 500; }
+
+        .content {
+            padding: 32px 36px 56px 36px;
+            max-width: 1180px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ---------- Section heading ---------- */
+        .section-heading {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin: 0 0 16px 0;
+        }
+
+        /* ---------- Overview row ---------- */
+        .overview-row {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 20px;
+            align-items: stretch;
+            margin-bottom: 32px;
+        }
+
+        /* Bank card */
+        .bank-card {
+            position: relative;
+            background: linear-gradient(155deg, var(--navy) 0%, #0F2A4E 60%, #123063 100%);
+            border-radius: 18px;
+            padding: 28px 26px;
+            color: #FFFFFF;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 210px;
+        }
+
+        .bank-card::after {
+            content: "";
+            position: absolute;
+            right: -60px;
+            top: -60px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.14) 0%, rgba(212, 175, 55, 0) 70%);
+        }
+
+        .bank-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .bank-card-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.01em;
+        }
+
+        .bank-card-brand svg { width: 20px; height: 20px; }
+
+        .chip {
+            width: 38px;
+            height: 28px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #E8CB6B, var(--gold));
+            position: relative;
+            z-index: 1;
+        }
+
+        .bank-card-balance-label {
+            font-size: 12.5px;
+            color: #AFC2DE;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .bank-card-balance {
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .bank-card-bottom {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .bank-card-field .label {
+            font-size: 11px;
+            color: #93A8C7;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .bank-card-field .value {
+            font-size: 14.5px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .bank-card-type-badge {
+            font-size: 11.5px;
+            font-weight: 600;
+            background: rgba(212, 175, 55, 0.18);
+            color: var(--gold);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            padding: 4px 10px;
+            border-radius: 999px;
+            text-transform: capitalize;
+        }
+
+        /* Summary panel */
+        .summary-panel {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 26px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .summary-panel-title {
+            font-size: 14.5px;
+            font-weight: 700;
+        }
+
+        .summary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+        .summary-row .k { font-size: 13px; color: var(--text-secondary); }
+        .summary-row .v { font-size: 14px; font-weight: 600; color: var(--text); }
+        .summary-row .v.balance-figure { font-size: 20px; font-weight: 800; color: var(--navy); }
+
+        /* ---------- Quick actions ---------- */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .action-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: #C9D6E8;
+        }
+
+        .action-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 11px;
+            background: #EAF0FA;
+            color: var(--royal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-icon svg { width: 21px; height: 21px; }
+
+        .action-title { font-size: 15px; font-weight: 700; }
+        .action-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.4; }
+
+        .action-cta {
+            margin-top: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--royal);
+        }
+
+        /* ---------- Lower row: activity + security ---------- */
+        .lower-row {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .activity-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .activity-panel p {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            margin: 0 0 6px 0;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.15s ease, transform 0.1s ease;
+        }
+
+        .btn-primary {
+            background: var(--royal);
+            color: #fff;
+        }
+
+        .btn-primary:hover { background: #17407A; }
+
+        .btn svg { width: 16px; height: 16px; }
+
+        .security-panel {
+            display: flex;
+            gap: 14px;
+        }
+
+        .security-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #FBF6E7;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .security-icon svg { width: 20px; height: 20px; }
+
+        .security-panel h3 {
+            font-size: 14.5px;
+            font-weight: 700;
+            margin: 2px 0 6px 0;
+        }
+
+        .security-panel p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* ---------- Empty state ---------- */
+        .empty-state {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 64px 40px;
+            text-align: center;
+            max-width: 520px;
+            margin: 48px auto;
+        }
+
+        .empty-state .icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: #EAF0FA;
+            color: var(--royal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 22px auto;
+        }
+
+        .empty-state .icon-wrap svg { width: 30px; height: 30px; }
+
+        .empty-state h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 0 0 26px 0;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 1080px) {
+            .sidebar { width: 220px; }
+            .actions-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 900px) {
+            .overview-row { grid-template-columns: 1fr; }
+            .lower-row { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 760px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                z-index: 40;
+                transform: translateX(-100%);
+                transition: transform 0.2s ease;
+                width: 260px;
+            }
+
+            .sidebar.open { transform: translateX(0); }
+
+            .sidebar-backdrop.open {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(11, 31, 58, 0.45);
+                z-index: 30;
+            }
+
+            .mobile-topbar {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 14px 18px;
+                background: var(--navy);
+                position: sticky;
+                top: 0;
+                z-index: 20;
+            }
+
+            .mobile-topbar .mark {
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+                background: linear-gradient(135deg, var(--gold), #B8932E);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .mobile-topbar .mark svg { width: 16px; height: 16px; }
+            .mobile-topbar .brand { color: #fff; font-weight: 700; font-size: 15px; }
+
+            .menu-btn {
+                background: rgba(255, 255, 255, 0.1);
+                border: none;
+                width: 36px;
+                height: 36px;
+                border-radius: 9px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            .menu-btn svg { width: 18px; height: 18px; color: #fff; }
+
+            .topbar { padding: 16px 18px; }
+            .topbar-greeting { font-size: 14px; }
+            .profile-chip .profile-name { display: none; }
+
+            .content { padding: 20px 18px 40px 18px; }
+            .actions-grid { grid-template-columns: 1fr; }
+            .bank-card-balance { font-size: 28px; }
+            .empty-state { padding: 44px 22px; margin: 24px auto; }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>Welcome to Banking System</h1>
+    <div class="app">
 
-    <h2> ladle ghop ghop , {{ name }}</h2>
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-    <hr>
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="mark">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v2h18V7L12 2z" fill="#0B1F3A"/><path d="M4 10v8h2v-8H4zm5 0v8h2v-8H9zm5 0v8h2v-8h-2zm5 0v8h2v-8h-2zM3 20h18v2H3v-2z" fill="#0B1F3A"/></svg>
+                </div>
+                <div class="brand">SecureBank</div>
+            </div>
 
-    {% if account %}
+            <div class="nav-section-label">Menu</div>
+            <ul class="nav-list">
+                <li>
+                    <a href="/dashboard" class="nav-item active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+                        Dashboard
+                    </a>
+                </li>
 
-        <h2>My Bank Account</h2>
+                {% if account %}
+                <li>
+                    <a href="/deposite" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                        Deposit Money
+                    </a>
+                </li>
+                <li>
+                    <a href="/withdraw" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                        Withdraw Money
+                    </a>
+                </li>
+                <li>
+                    <a href="/transfer" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h13M13 4l4 4-4 4M20 16H7M11 20l-4-4 4-4"/></svg>
+                        Transfer Money
+                    </a>
+                </li>
+                <li>
+                    <a href="/transactions" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+                        Transaction History
+                    </a>
+                </li>
+                <li>
+                    <a href="/account-details" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg>
+                        Account Details
+                    </a>
+                </li>
+                {% endif %}
 
-        <p>
-            Account Number:
-            {{ account.account_number }}
-        </p>
+                <li>
+                    <span class="nav-item disabled">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10l9-6 9 6-9 6-9-6z"/><path d="M3 10v6l9 6 9-6v-6"/></svg>
+                        Apply for Loan
+                        <span class="soon-tag">Soon</span>
+                    </span>
+                </li>
+                <li>
+                    <span class="nav-item disabled">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                        Loan Status
+                        <span class="soon-tag">Soon</span>
+                    </span>
+                </li>
+            </ul>
 
-        <p>
-            Account Type:
-            {{ account.account_type }}
-        </p>
+            <div class="sidebar-spacer"></div>
 
-        <p>
-            Balance:
-            ₹{{ account.balance }}
-        </p>
-
-        <hr>
-
-        <h2>Banking Services</h2>
-
-        <ul>
-
-            <li>
-                <a href="/deposite">
-                    Deposit Money
+            <div class="sidebar-footer">
+                <a href="/logout" class="logout-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                    Logout
                 </a>
-            </li>
+            </div>
+        </aside>
 
-            <li>
-                <a href="/withdraw">
-                    Withdraw Money
-                </a>
-            </li>
-            
-            <li>
-                 <a href="/transfer">
-                     Transfer Money
-                </a>
-            </li>
+        <!-- ================= MAIN ================= -->
+        <div class="main">
 
-            <li>
-                <a href="/transactions">
-                    Transaction History
-                </a>
-            </li>
+            <div class="mobile-topbar">
+                <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                </button>
+                <div class="mark">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v2h18V7L12 2z" fill="#0B1F3A"/><path d="M4 10v8h2v-8H4zm5 0v8h2v-8H9zm5 0v8h2v-8h-2zm5 0v8h2v-8h-2zM3 20h18v2H3v-2z" fill="#0B1F3A"/></svg>
+                </div>
+                <div class="brand">SecureBank</div>
+            </div>
 
-            <li>
-                <a href="/account-details">
-                     Account Details
-                </a>
-            </li>
+            <div class="topbar">
+                <div class="topbar-greeting">
+                    Welcome back, {{ name }}
+                    <span class="sub">Here's what's happening with your account today.</span>
+                </div>
+                <div class="profile-chip">
+                    <div class="profile-avatar">{{ name[0]|upper if name else "U" }}</div>
+                    <span class="profile-name">{{ name }}</span>
+                </div>
+            </div>
 
-            <li>
-                Apply for Loan
-            </li>
+            <div class="content">
 
-            <li>
-                Loan Status
-            </li>
+                {% if account %}
 
-        </ul>
+                    <div class="overview-row">
 
-    {% else %}
+                        <!-- Bank card -->
+                        <div class="bank-card">
+                            <div class="bank-card-top">
+                                <div class="bank-card-brand">
+                                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v2h18V7L12 2z" fill="#D4AF37"/><path d="M4 10v8h2v-8H4zm5 0v8h2v-8H9zm5 0v8h2v-8h-2zm5 0v8h2v-8h-2zM3 20h18v2H3v-2z" fill="#D4AF37"/></svg>
+                                    SecureBank
+                                </div>
+                                <div class="chip"></div>
+                            </div>
 
-        <h2>No Bank Account Found</h2>
+                            <div>
+                                <div class="bank-card-balance-label">Available Balance</div>
+                                <div class="bank-card-balance">₹{{ account.balance }}</div>
+                            </div>
 
-        <p>
-            You need to create a bank account
-            before using banking services.
-        </p>
+                            <div class="bank-card-bottom">
+                                <div class="bank-card-field">
+                                    <div class="label">Account Number</div>
+                                    <div class="value">{{ account.account_number }}</div>
+                                </div>
+                                <div class="bank-card-type-badge">{{ account.account_type }}</div>
+                            </div>
+                        </div>
 
-        <a href="/create-account">
-            Create Bank Account
-        </a>
+                        <!-- Summary panel -->
+                        <div class="summary-panel">
+                            <div class="summary-panel-title">My Bank Account</div>
 
-    {% endif %}
+                            <div class="summary-row">
+                                <span class="k">Available Balance</span>
+                                <span class="v balance-figure">₹{{ account.balance }}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="k">Account Number</span>
+                                <span class="v">{{ account.account_number }}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="k">Account Type</span>
+                                <span class="v">{{ account.account_type }}</span>
+                            </div>
+                        </div>
 
-    <br><br>
+                    </div>
 
-    <a href="/logout">Logout</a>
+                    <!-- Quick actions -->
+                    <h2 class="section-heading">Quick Actions</h2>
+                    <div class="actions-grid">
+
+                        <a href="/deposite" class="action-card">
+                            <div class="action-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                            </div>
+                            <div class="action-title">Deposit Money</div>
+                            <div class="action-desc">Add funds to your account</div>
+                            <div class="action-cta">Deposit now →</div>
+                        </a>
+
+                        <a href="/withdraw" class="action-card">
+                            <div class="action-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                            </div>
+                            <div class="action-title">Withdraw Money</div>
+                            <div class="action-desc">Withdraw funds securely</div>
+                            <div class="action-cta">Withdraw now →</div>
+                        </a>
+
+                        <a href="/transfer" class="action-card">
+                            <div class="action-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h13M13 4l4 4-4 4M20 16H7M11 20l-4-4 4-4"/></svg>
+                            </div>
+                            <div class="action-title">Transfer Money</div>
+                            <div class="action-desc">Send money to another account</div>
+                            <div class="action-cta">Transfer now →</div>
+                        </a>
+
+                        <a href="/transactions" class="action-card">
+                            <div class="action-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+                            </div>
+                            <div class="action-title">Transaction History</div>
+                            <div class="action-desc">View your recent banking activity</div>
+                            <div class="action-cta">View history →</div>
+                        </a>
+
+                        <a href="/account-details" class="action-card">
+                            <div class="action-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg>
+                            </div>
+                            <div class="action-title">Account Details</div>
+                            <div class="action-desc">View your personal and account information</div>
+                            <div class="action-cta">View details →</div>
+                        </a>
+
+                    </div>
+
+                    <!-- Lower row -->
+                    <div class="lower-row">
+
+                        <div class="panel activity-panel">
+                            <div class="section-heading" style="margin-bottom:0;">Recent Activity</div>
+                            <p>Review deposits, withdrawals and transfers on your account in one place.</p>
+                            <a href="/transactions" class="btn btn-primary">
+                                View Transaction History
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+
+                        <div class="panel security-panel">
+                            <div class="security-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg>
+                            </div>
+                            <div>
+                                <h3>Your account is secure</h3>
+                                <p>Keep your banking credentials private and always log out when using a shared device.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+                        <div class="icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 018 0v2"/></svg>
+                        </div>
+                        <h2>No Bank Account Found</h2>
+                        <p>You need to create a bank account before using banking services. Set one up in a few steps to start depositing, withdrawing and transferring money.</p>
+                        <a href="/create-account" class="btn btn-primary">
+                            Create Bank Account
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var sidebar = document.getElementById('sidebar');
+            var backdrop = document.getElementById('sidebarBackdrop');
+            var menuBtn = document.getElementById('menuBtn');
+
+            function openMenu() {
+                sidebar.classList.add('open');
+                backdrop.classList.add('open');
+            }
+            function closeMenu() {
+                sidebar.classList.remove('open');
+                backdrop.classList.remove('open');
+            }
+
+            if (menuBtn) menuBtn.addEventListener('click', openMenu);
+            if (backdrop) backdrop.addEventListener('click', closeMenu);
+        })();
+    </script>
 
 </body>
 
