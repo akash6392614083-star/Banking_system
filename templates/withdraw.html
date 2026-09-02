@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Withdraw Money</title>
+</head>
+
+<body>
+
+    <h1>Withdraw Money</h1>
+
+    <p>Current Balance: ₹{{ balance }}</p>
+
+    <form action="/withdraw" method="POST">
+
+        <label>Enter Amount:</label>
+        <br><br>
+
+        <input
+            type="number"
+            name="amount"
+            min="1"
+            step="0.01"
+            required
+        >
+
+        <br><br>
+
+        <button type="submit">Withdraw Money</button>
+
+    </form>
+
+    <br>
+
+    <a href="/dashboard">Back to Dashboard</a>
+
+</body>
+</html>
