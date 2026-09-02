@@ -300,6 +300,163 @@ def create_account():
 
     return render_template("create_account.html")
 
+
+# ================= DEPOSIT =================
+
+@app.route("/deposit", methods=["GET", "POST"])
+def deposit():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user_id = session["user_id"]
+
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT id, balance
+        FROM accounts
+        WHERE user_id = %s
+        LIMIT 1
+    """, (user_id,))
+
+    account = cursor.fetchone()
+    cursor.close()
+
+    if not account:
+        return redirect(url_for("create_account"))
+
+    if request.method == "POST":
+
+        amount = float(request.form["amount"])
+
+        if amount <= 0:
+            return "Invalid deposit amount"
+
+        try:
+
+            cursor = db.cursor()
+
+            # Update account balance
+            cursor.execute("""
+                UPDATE accounts
+                SET balance = balance + %s
+                WHERE id = %s
+            """, (amount, account["id"]))
+
+            # Save transaction
+            cursor.execute("""
+                INSERT INTO transactions
+                (
+                    account_id,
+                    transaction_type,
+                    amount,
+                    description
+                )
+                VALUES (%s, %s, %s, %s)
+            """, (
+                account["id"],
+                "Deposit",
+                amount,
+                "Money deposited"
+            ))
+
+            db.commit()
+            cursor.close()
+
+            return redirect(url_for("dashboard"))
+
+        except mysql.connector.Error as error:
+
+            db.rollback()
+
+            return "Database Error: " + str(error)
+
+    return render_template(
+        "deposit.html",
+        balance=account["balance"]
+    )
+
+
+# ================= WITHDRAW =================
+
+@app.route("/withdraw", methods=["GET", "POST"])
+def withdraw():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user_id = session["user_id"]
+
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT id, balance
+        FROM accounts
+        WHERE user_id = %s
+        LIMIT 1
+    """, (user_id,))
+
+    account = cursor.fetchone()
+    cursor.close()
+
+    if not account:
+        return redirect(url_for("create_account"))
+
+    if request.method == "POST":
+
+        amount = float(request.form["amount"])
+
+        if amount <= 0:
+            return "Invalid withdrawal amount"
+
+        if amount > float(account["balance"]):
+            return "Insufficient balance"
+
+        try:
+
+            cursor = db.cursor()
+
+            # Update account balance
+            cursor.execute("""
+                UPDATE accounts
+                SET balance = balance - %s
+                WHERE id = %s
+            """, (amount, account["id"]))
+
+            # Save transaction
+            cursor.execute("""
+                INSERT INTO transactions
+                (
+                    account_id,
+                    transaction_type,
+                    amount,
+                    description
+                )
+                VALUES (%s, %s, %s, %s)
+            """, (
+                account["id"],
+                "Withdrawal",
+                amount,
+                "Money withdrawn"
+            ))
+
+            db.commit()
+            cursor.close()
+
+            return redirect(url_for("dashboard"))
+
+        except mysql.connector.Error as error:
+
+            db.rollback()
+
+            return "Database Error: " + str(error)
+
+    return render_template(
+        "withdraw.html",
+        balance=account["balance"]
+    )
+
 # ================= LOGOUT =================
 
 @app.route("/logout")
