@@ -147,68 +147,158 @@ def dashboard():
 @app.route("/create-account", methods=["GET", "POST"])
 def create_account():
 
-    # User must be logged in
     if "user_id" not in session:
         return redirect(url_for("login"))
 
     user_id = session["user_id"]
 
-    # Check whether account already exists
+    # Check if account already exists
     cursor = db.cursor(dictionary=True)
 
-    query = """
-    SELECT id
-    FROM accounts
-    WHERE user_id = %s
-    LIMIT 1
-    """
-
-    cursor.execute(query, (user_id,))
+    cursor.execute("""
+        SELECT id
+        FROM accounts
+        WHERE user_id = %s
+        LIMIT 1
+    """, (user_id,))
 
     existing_account = cursor.fetchone()
-
     cursor.close()
 
-    # Don't allow multiple accounts for now
     if existing_account:
         return redirect(url_for("dashboard"))
 
-    # Create account
     if request.method == "POST":
 
+        # Customer profile
+        date_of_birth = request.form["date_of_birth"]
+        gender = request.form["gender"]
+        address = request.form["address"]
+        city = request.form["city"]
+        state = request.form["state"]
+        pincode = request.form["pincode"]
+        occupation = request.form["occupation"]
+
+        # Account
         account_type = request.form["account_type"]
+
+        # Initial deposit
+        initial_deposit = float(request.form["initial_deposit"])
 
         # Generate account number
         account_number = str(
             random.randint(1000000000, 9999999999)
         )
 
-        cursor = db.cursor()
+        try:
 
-        query = """
-        INSERT INTO accounts
-        (user_id, account_number, account_type, balance)
-        VALUES (%s, %s, %s, %s)
-        """
+            cursor = db.cursor()
 
-        cursor.execute(
-            query,
-            (
-                user_id,
-                account_number,
-                account_type,
-                0
+            # --------------------------------
+            # 1. CREATE CUSTOMER PROFILE
+            # --------------------------------
+
+            profile_query = """
+                INSERT INTO profiles
+                (
+                    user_id,
+                    date_of_birth,
+                    gender,
+                    address,
+                    city,
+                    state,
+                    pincode,
+                    occupation
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+
+            cursor.execute(
+                profile_query,
+                (
+                    user_id,
+                    date_of_birth,
+                    gender,
+                    address,
+                    city,
+                    state,
+                    pincode,
+                    occupation
+                )
             )
-        )
 
-        db.commit()
+            # --------------------------------
+            # 2. CREATE BANK ACCOUNT
+            # --------------------------------
 
-        cursor.close()
+            account_query = """
+                INSERT INTO accounts
+                (
+                    user_id,
+                    account_number,
+                    account_type,
+                    balance
+                )
+                VALUES (%s, %s, %s, %s)
+            """
 
-        return redirect(url_for("dashboard"))
+            cursor.execute(
+                account_query,
+                (
+                    user_id,
+                    account_number,
+                    account_type,
+                    initial_deposit
+                )
+            )
+
+            # Get newly created account ID
+            account_id = cursor.lastrowid
+
+            # --------------------------------
+            # 3. CREATE INITIAL DEPOSIT TRANSACTION
+            # --------------------------------
+
+            if initial_deposit > 0:
+
+                transaction_query = """
+                    INSERT INTO transactions
+                    (
+                        account_id,
+                        transaction_type,
+                        amount,
+                        description
+                    )
+                    VALUES (%s, %s, %s, %s)
+                """
+
+                cursor.execute(
+                    transaction_query,
+                    (
+                        account_id,
+                        "Deposit",
+                        initial_deposit,
+                        "Initial account deposit"
+                    )
+                )
+
+            # --------------------------------
+            # 4. SAVE EVERYTHING
+            # --------------------------------
+
+            db.commit()
+
+            cursor.close()
+
+            return redirect(url_for("dashboard"))
+
+        except mysql.connector.Error as error:
+
+            db.rollback()
+
+            return "Database Error: " + str(error)
 
     return render_template("create_account.html")
-
 
 # ================= LOGOUT =================
 
