@@ -1,65 +1,542 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transfer Money</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0B1F3A;
+            --royal: #1E4D8F;
+            --gold: #D4AF37;
+            --bg: #F5F7FA;
+            --white: #FFFFFF;
+            --text-primary: #172033;
+            --text-secondary: #667085;
+            --border: #E4E7EC;
+            --shadow: 0 1px 2px rgba(11, 31, 58, 0.04), 0 4px 12px rgba(11, 31, 58, 0.06);
+            --radius: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+        }
+
+        /* Top navigation bar — shared across dashboard, deposit, withdraw, transfer */
+        .topbar {
+            background: var(--navy);
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--white);
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.01em;
+        }
+
+        .topbar .brand .mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--gold), #b8942c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--navy);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .topbar .back-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #C7D2E3;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .topbar .back-link:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--white);
+        }
+
+        /* Page shell */
+        .page {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 40px 24px 64px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 6px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            color: var(--navy);
+        }
+
+        .page-header p {
+            margin: 0;
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        /* Layout: summary column + form column */
+        .layout {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Shared card styling */
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+        }
+
+        .card h2 {
+            margin: 0 0 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: none;
+        }
+
+        /* Account summary card */
+        .account-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .account-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .account-row:first-child {
+            padding-top: 0;
+        }
+
+        .account-row .label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .account-row .value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--navy);
+            letter-spacing: -0.01em;
+        }
+
+        .account-row .value.balance {
+            color: var(--royal);
+            font-size: 22px;
+        }
+
+        /* Transfer flow visual */
+        .flow-card {
+            padding: 20px 24px;
+        }
+
+        .flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .flow-node {
+            flex: 1;
+            text-align: center;
+        }
+
+        .flow-node .dot {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            color: var(--royal);
+        }
+
+        .flow-node .dot.receiver {
+            color: var(--gold);
+        }
+
+        .flow-node .flow-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .flow-node .flow-sub {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .flow-arrow {
+            color: var(--border);
+            display: flex;
+            align-items: center;
+            padding-bottom: 22px;
+        }
+
+        /* Security note card */
+        .note-card {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            background: #F8FAFC;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 18px;
+        }
+
+        .note-card .icon {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(30, 77, 143, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--royal);
+        }
+
+        .note-card .note-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--navy);
+            margin: 0 0 3px;
+        }
+
+        .note-card .note-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Form card */
+        .form-card h2 {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 20px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .field .hint {
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap .prefix {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--text-primary);
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .field input.with-prefix {
+            padding-left: 30px;
+        }
+
+        .field input:focus {
+            border-color: var(--royal);
+            box-shadow: 0 0 0 3px rgba(30, 77, 143, 0.12);
+        }
+
+        .field input::placeholder {
+            color: #A0AAB8;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 13px 20px;
+            background: var(--royal);
+            color: var(--white);
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.15s ease, transform 0.05s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--navy);
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+
+        .form-footer {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .form-footer a {
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .form-footer a:hover {
+            color: var(--royal);
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 860px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .page {
+                padding: 28px 16px 48px;
+            }
+
+            .topbar {
+                padding: 16px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 24px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>Transfer Money</h1>
+    <div class="topbar">
+        <div class="brand">
+            <span class="mark">SB</span>
+            <span>SecureBank</span>
+        </div>
+        <a class="back-link" href="/dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5"></path>
+                <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+            Back to Dashboard
+        </a>
+    </div>
 
-    <hr>
+    <div class="page">
 
-    <h2>Current Balance</h2>
+        <div class="page-header">
+            <h1>Transfer Money</h1>
+            <p>Send money securely to another SecureBank account.</p>
+        </div>
 
-    <p>
-        ₹{{ balance }}
-    </p>
+        <div class="layout">
 
-    <form method="POST">
+            <!-- Left column: account summary, transfer flow, security note -->
+            <div class="left-col">
 
-        <label>
-            Receiver Account Number:
-        </label>
+                <div class="card">
+                    <h2>Your Account</h2>
+                    <div class="account-row">
+                        <span class="label">Account Number</span>
+                        <span class="value">{{ account_number }}</span>
+                    </div>
+                    <div class="account-row">
+                        <span class="label">Available Balance</span>
+                        <span class="value balance">₹{{ balance }}</span>
+                    </div>
+                </div>
 
-        <br>
+                <div class="card flow-card">
+                    <div class="flow">
+                        <div class="flow-node">
+                            <div class="dot">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="14" rx="2"></rect>
+                                    <path d="M3 9h18"></path>
+                                </svg>
+                            </div>
+                            <div class="flow-label">Your Account</div>
+                            <div class="flow-sub">{{ account_number }}</div>
+                        </div>
 
-        <input
-            type="text"
-            name="receiver_account_number"
-            required
-        >
+                        <div class="flow-arrow">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14"></path>
+                                <path d="M13 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
 
-        <br><br>
+                        <div class="flow-node">
+                            <div class="dot receiver">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="8" r="4"></circle>
+                                    <path d="M4 21c0-4 4-6 8-6s8 2 8 6"></path>
+                                </svg>
+                            </div>
+                            <div class="flow-label">Receiver</div>
+                            <div class="flow-sub">Entered below</div>
+                        </div>
+                    </div>
+                </div>
 
-        <label>
-            Amount:
-        </label>
+                <div class="note-card">
+                    <div class="icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <path d="M9 12l2 2 4-4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="note-title">Transfer securely</p>
+                        <p class="note-text">Double-check the receiver account number before confirming your
+                            transfer.</p>
+                    </div>
+                </div>
 
-        <br>
+            </div>
 
-        <input
-            type="number"
-            name="amount"
-            step="0.01"
-            min="0.01"
-            required
-        >
+            <!-- Right column: transfer form -->
+            <div class="card form-card">
+                <h2>Transfer Details</h2>
 
-        <br><br>
+                <form method="POST">
 
-        <button type="submit">
-            Transfer Money
-        </button>
+                    <div class="field">
+                        <label for="receiver_account_number">Receiver Account Number</label>
+                        <input
+                            type="text"
+                            id="receiver_account_number"
+                            name="receiver_account_number"
+                            placeholder="Enter 10-digit account number"
+                            required
+                        >
+                    </div>
 
-    </form>
+                    <div class="field">
+                        <label for="amount">Transfer Amount <span class="hint">(₹)</span></label>
+                        <div class="input-wrap">
+                            <span class="prefix">₹</span>
+                            <input
+                                type="number"
+                                id="amount"
+                                name="amount"
+                                step="0.01"
+                                min="0.01"
+                                placeholder="0.00"
+                                class="with-prefix"
+                                required
+                            >
+                        </div>
+                    </div>
 
-    <br>
+                    <button type="submit" class="btn-primary">Transfer Money</button>
 
-    <a href="/dashboard">
-        Back to Dashboard
-    </a>
+                    <div class="form-footer">
+                        <a href="/dashboard">Back to Dashboard</a>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+
+    </div>
 
 </body>
 
