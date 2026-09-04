@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SecureBank - Manager Login</title>
+</head>
+
+<body>
+
+    <header>
+
+        <h2>SecureBank</h2>
+
+        <nav>
+            <a href="/manager">Manager Home</a>
+            <a href="/manager-register">Manager Register</a>
+        </nav>
+
+    </header>
+
+    <hr>
+
+    <main>
+
+        <h1>Manager Login</h1>
+
+        <p>Login to access the SecureBank Manager Portal.</p>
+
+        <form method="POST" action="/manager-login">
+
+            <label>Email:</label>
+            <br>
+            <input type="email" name="email" required>
+
+            <br><br>
+
+            <label>Password:</label>
+            <br>
+            <input type="password" name="password" required>
+
+            <br><br>
+
+            <button type="submit">Login</button>
+
+        </form>
+
+        <br>
+
+        <p>
+            Don't have a manager account?
+            <a href="/manager-register">Register here</a>
+        </p>
+
+    </main>
+
+    <hr>
+
+    <footer>
+
+        <p>SecureBank Manager Portal</p>
+
+    </footer>
+
+</body>
+
+</html>

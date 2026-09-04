@@ -1,59 +1,434 @@
-```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Home Loan Application</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Loan Application | SecureBank</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --navy: #0B1F3A;
+        --royal: #1E4D8F;
+        --gold: #D4AF37;
+        --bg: #F5F7FA;
+        --white: #FFFFFF;
+        --text: #172033;
+        --text-secondary: #667085;
+        --border: #E4E7EC;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    .site-header {
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        padding: 16px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        font-size: 18px;
+        color: var(--navy);
+        letter-spacing: -0.2px;
+    }
+
+    .brand svg {
+        flex-shrink: 0;
+    }
+
+    .header-note {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-secondary);
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .header-note svg {
+        flex-shrink: 0;
+    }
+
+    /* Page layout */
+    .page {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 40px 24px 80px;
+    }
+
+    .page-header {
+        margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+        font-size: 30px;
+        font-weight: 800;
+        margin: 0 0 8px;
+        color: var(--navy);
+        letter-spacing: -0.3px;
+    }
+
+    .page-header p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 15px;
+        line-height: 1.6;
+        max-width: 60ch;
+    }
+
+    /* Notice box */
+    .notice {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        background: #EEF3FB;
+        border: 1px solid #D6E1F2;
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 28px;
+        font-size: 13.5px;
+        color: var(--text);
+        line-height: 1.6;
+    }
+
+    .notice svg {
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    /* Card */
+    .card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+        overflow: hidden;
+    }
+
+    .card form {
+        padding: 8px 32px 32px;
+    }
+
+    .form-section {
+        padding: 24px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .form-section:last-of-type {
+        border-bottom: none;
+    }
+
+    .section-title {
+        font-size: 12.5px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--royal);
+        margin: 0 0 18px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 20px;
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .field.full {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .hint {
+        font-size: 12px;
+        color: var(--text-secondary);
+        font-weight: 400;
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        background: var(--white);
+        font-family: inherit;
+        font-size: 14px;
+        color: var(--text);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input::placeholder {
+        color: #9AA4B2;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--royal);
+        box-shadow: 0 0 0 3px rgba(30, 77, 143, 0.12);
+    }
+
+    /* Submit area */
+    .submit-row {
+        padding: 28px 0 4px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .submit-note {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        color: var(--text-secondary);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--navy), var(--royal));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 14px 28px;
+        font-weight: 600;
+        font-size: 15px;
+        font-family: inherit;
+        cursor: pointer;
+        transition: filter 0.15s ease, transform 0.15s ease;
+        white-space: nowrap;
+    }
+
+    .btn-primary:hover {
+        filter: brightness(1.1);
+    }
+
+    .btn-primary:active {
+        transform: translateY(1px);
+    }
+
+    .btn-primary:focus-visible {
+        outline: 3px solid rgba(30, 77, 143, 0.35);
+        outline-offset: 2px;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+        .page {
+            padding: 32px 20px 64px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .site-header {
+            padding: 14px 18px;
+        }
+
+        .header-note {
+            display: none;
+        }
+
+        .page {
+            padding: 24px 14px 56px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+        }
+
+        .card form {
+            padding: 4px 18px 24px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .submit-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-primary {
+            width: 100%;
+        }
+    }
+</style>
 </head>
 
 <body>
 
-    <h1>Home Loan Application</h1>
+    <header class="site-header">
+        <div class="brand">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L3 6V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V6L12 2Z" fill="#0B1F3A"/>
+                <path d="M12 4.2L19 7.4V11C19 15.5 16 19.7 12 20.9C8 19.7 5 15.5 5 11V7.4L12 4.2Z" fill="#1E4D8F"/>
+                <path d="M10.3 12.6L8.9 11.2L7.8 12.3L10.3 14.8L16.2 8.9L15.1 7.8L10.3 12.6Z" fill="#D4AF37"/>
+            </svg>
+            SecureBank
+        </div>
+        <div class="header-note">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="5" y="11" width="14" height="9" rx="2" stroke="#667085" stroke-width="1.6"/>
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#667085" stroke-width="1.6"/>
+            </svg>
+            Your information is encrypted and secure
+        </div>
+    </header>
 
-    <form method="POST" action="/home-loan">
+    <main class="page">
 
-        <label>Age:</label>
-        <input type="number" name="Age" required><br><br>
+        <div class="page-header">
+            <h1>Home Loan Application</h1>
+            <p>Complete your application with the required personal, property, and financial information.</p>
+        </div>
 
-        <label>Occupation:</label>
-        <input type="text" name="Occupation" required><br><br>
+        <div class="notice">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="9" stroke="#1E4D8F" stroke-width="1.6"/>
+                <path d="M12 8V13" stroke="#1E4D8F" stroke-width="1.6" stroke-linecap="round"/>
+                <circle cx="12" cy="16" r="1" fill="#1E4D8F"/>
+            </svg>
+            <span>Your application will be reviewed by our banking team. Please ensure all details are accurate before submitting.</span>
+        </div>
 
-        <label>Employment Type:</label>
-        <input type="text" name="Employment_Type" required><br><br>
+        <div class="card">
+            <form method="POST" action="/home-loan">
 
-        <label>Monthly Income:</label>
-        <input type="number" name="Monthly_Income" required><br><br>
+                <div class="form-section">
+                    <h2 class="section-title">Personal Information</h2>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="Age">Age</label>
+                            <input type="number" id="Age" name="Age" required>
+                        </div>
+                        <div class="field">
+                            <label for="Occupation">Occupation</label>
+                            <input type="text" id="Occupation" name="Occupation" required>
+                        </div>
+                        <div class="field">
+                            <label for="Number_of_Dependents">Number of Dependents</label>
+                            <input type="number" id="Number_of_Dependents" name="Number_of_Dependents" required>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Employment/Business Duration:</label>
-        <input type="number" step="0.1" name="Employment_Business_Duration" required><br><br>
+                <div class="form-section">
+                    <h2 class="section-title">Employment / Business Information</h2>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="Employment_Type">Employment Type</label>
+                            <input type="text" id="Employment_Type" name="Employment_Type" required>
+                        </div>
+                        <div class="field">
+                            <label for="Employment_Business_Duration">Employment / Business Duration</label>
+                            <input type="number" step="0.1" id="Employment_Business_Duration" name="Employment_Business_Duration" required>
+                            <span class="hint">Number of years</span>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Existing Monthly EMI:</label>
-        <input type="number" name="Existing_Monthly_EMI" required><br><br>
+                <div class="form-section">
+                    <h2 class="section-title">Financial Information</h2>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="Monthly_Income">Monthly Income</label>
+                            <input type="number" id="Monthly_Income" name="Monthly_Income" required>
+                        </div>
+                        <div class="field">
+                            <label for="Existing_Monthly_EMI">Existing Monthly EMI</label>
+                            <input type="number" id="Existing_Monthly_EMI" name="Existing_Monthly_EMI" required>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Loan Amount:</label>
-        <input type="number" name="Loan_Amount" required><br><br>
+                <div class="form-section">
+                    <h2 class="section-title">Loan Information</h2>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="Loan_Amount">Loan Amount</label>
+                            <input type="number" id="Loan_Amount" name="Loan_Amount" required>
+                        </div>
+                        <div class="field">
+                            <label for="Loan_Tenure">Loan Tenure</label>
+                            <input type="number" id="Loan_Tenure" name="Loan_Tenure" required>
+                            <span class="hint">Number of years</span>
+                        </div>
+                        <div class="field">
+                            <label for="Down_Payment">Down Payment</label>
+                            <input type="number" id="Down_Payment" name="Down_Payment" required>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Loan Tenure:</label>
-        <input type="number" name="Loan_Tenure" required><br><br>
+                <div class="form-section">
+                    <h2 class="section-title">Property Information</h2>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="Property_Value">Property Value</label>
+                            <input type="number" id="Property_Value" name="Property_Value" required>
+                        </div>
+                        <div class="field">
+                            <label for="Property_Type">Property Type</label>
+                            <input type="text" id="Property_Type" name="Property_Type" required>
+                        </div>
+                        <div class="field full">
+                            <label for="Property_Location_Type">Property Location Type</label>
+                            <input type="text" id="Property_Location_Type" name="Property_Location_Type" required>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Property Value:</label>
-        <input type="number" name="Property_Value" required><br><br>
+                <div class="submit-row">
+                    <div class="submit-note">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="5" y="11" width="14" height="9" rx="2" stroke="#667085" stroke-width="1.6"/>
+                            <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#667085" stroke-width="1.6"/>
+                        </svg>
+                        Submitted securely to SecureBank
+                    </div>
+                    <button type="submit" class="btn-primary">Check Loan Eligibility</button>
+                </div>
 
-        <label>Down Payment:</label>
-        <input type="number" name="Down_Payment" required><br><br>
+            </form>
+        </div>
 
-        <label>Property Type:</label>
-        <input type="text" name="Property_Type" required><br><br>
-
-        <label>Property Location Type:</label>
-        <input type="text" name="Property_Location_Type" required><br><br>
-
-        <label>Number of Dependents:</label>
-        <input type="number" name="Number_of_Dependents" required><br><br>
-
-        <button type="submit">Check Loan Eligibility</button>
-
-    </form>
+    </main>
 
 </body>
 </html>
-```

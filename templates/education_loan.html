@@ -1,68 +1,406 @@
-```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Education Loan Application</title>
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Education Loan Application | SecureBank</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --navy: #0B1F3A;
+        --royal: #1E4D8F;
+        --gold: #D4AF37;
+        --bg: #F5F7FA;
+        --white: #FFFFFF;
+        --text: #172033;
+        --text-secondary: #667085;
+        --border: #E4E7EC;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+    }
+
+    /* Header */
+    .site-header {
+        background: var(--navy);
+        padding: 18px 32px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--white);
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: 0.2px;
+    }
+
+    .brand svg {
+        flex-shrink: 0;
+    }
+
+    /* Layout */
+    .page-wrap {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 40px 24px 80px;
+    }
+
+    .page-header {
+        margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0 0 8px;
+        color: var(--navy);
+    }
+
+    .page-header p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    /* Notice */
+    .notice {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        background: #EFF4FB;
+        border: 1px solid #D6E3F4;
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin-bottom: 28px;
+        font-size: 13.5px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    .notice svg {
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    /* Card / Form */
+    .card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+        padding: 32px;
+    }
+
+    .section {
+        margin-bottom: 32px;
+    }
+
+    .section:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .section-title {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: var(--royal);
+        margin: 0 0 4px;
+    }
+
+    .section-sub {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin: 0 0 18px;
+    }
+
+    .section + .section {
+        padding-top: 28px;
+        border-top: 1px solid var(--border);
+    }
+
+    .field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 20px;
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .field.full {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        background: var(--white);
+        font-family: inherit;
+        font-size: 14px;
+        color: var(--text);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--royal);
+        box-shadow: 0 0 0 3px rgba(30, 77, 143, 0.12);
+    }
+
+    /* Submit */
+    .submit-row {
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .submit-note {
+        font-size: 12.5px;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--navy), var(--royal));
+        color: var(--white);
+        border: none;
+        border-radius: 10px;
+        padding: 13px 28px;
+        font-family: inherit;
+        font-size: 14.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: filter 0.15s ease, transform 0.15s ease;
+    }
+
+    .btn-primary:hover {
+        filter: brightness(1.12);
+    }
+
+    .btn-primary:active {
+        transform: translateY(1px);
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+        .page-wrap {
+            padding: 32px 20px 64px;
+        }
+
+        .card {
+            padding: 26px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .site-header {
+            padding: 16px 20px;
+        }
+
+        .page-header h1 {
+            font-size: 23px;
+        }
+
+        .card {
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .field-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .submit-row {
+            flex-direction: column-reverse;
+            align-items: stretch;
+        }
+
+        .btn-primary {
+            width: 100%;
+        }
+    }
+</style>
+</head>
 <body>
 
-    <h1>Education Loan Application</h1>
+    <header class="site-header">
+        <div class="brand">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M12 2L3 6V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V6L12 2Z" fill="#D4AF37"/>
+                <path d="M12 4.2L5 7.4V11C5 15.6 8.1 19.8 12 20.9C15.9 19.8 19 15.6 19 11V7.4L12 4.2Z" fill="#0B1F3A"/>
+            </svg>
+            SecureBank
+        </div>
+    </header>
 
-    <form method="POST" action="/education-loan">
+    <main class="page-wrap">
 
-        <label>Age:</label>
-        <input type="number" name="Age" required><br><br>
+        <div class="page-header">
+            <h1>Education Loan</h1>
+            <p>Complete your application with the required personal, academic, and financial information.</p>
+        </div>
 
-        <label>Education Level:</label>
-        <input type="text" name="Education_Level" required><br><br>
+        <div class="notice">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M12 2L3 6V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V6L12 2Z" stroke="#1E4D8F" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M12 8V13" stroke="#1E4D8F" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="12" cy="16" r="1" fill="#1E4D8F"/>
+            </svg>
+            <span>Your information is submitted securely. Once received, your application will be reviewed by our banking team, and you will be notified of the outcome.</span>
+        </div>
 
-        <label>Course Type:</label>
-        <input type="text" name="Course_Type" required><br><br>
+        <div class="card">
+            <form method="POST" action="/education-loan">
 
-        <label>Course Duration:</label>
-        <input type="number" step="0.1" name="Course_Duration" required><br><br>
+                <div class="section">
+                    <h2 class="section-title">Personal Information</h2>
+                    <p class="section-sub">Basic details about the applicant.</p>
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="Age">Age</label>
+                            <input type="number" id="Age" name="Age" required>
+                        </div>
+                        <div class="field">
+                            <label for="Education_Level">Education Level</label>
+                            <input type="text" id="Education_Level" name="Education_Level" required>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Institution Type:</label>
-        <input type="text" name="Institution_Type" required><br><br>
+                <div class="section">
+                    <h2 class="section-title">Course &amp; Institution Information</h2>
+                    <p class="section-sub">Details about the course and institution you plan to attend.</p>
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="Course_Type">Course Type</label>
+                            <input type="text" id="Course_Type" name="Course_Type" required>
+                        </div>
+                        <div class="field">
+                            <label for="Course_Duration">Course Duration (years)</label>
+                            <input type="number" step="0.1" id="Course_Duration" name="Course_Duration" required>
+                        </div>
+                        <div class="field">
+                            <label for="Institution_Type">Institution Type</label>
+                            <input type="text" id="Institution_Type" name="Institution_Type" required>
+                        </div>
+                        <div class="field">
+                            <label for="Institution_Location">Institution Location</label>
+                            <input type="text" id="Institution_Location" name="Institution_Location" required>
+                        </div>
+                        <div class="field full">
+                            <label for="Admission_Status">Admission Status</label>
+                            <input type="text" id="Admission_Status" name="Admission_Status" required>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Institution Location:</label>
-        <input type="text" name="Institution_Location" required><br><br>
+                <div class="section">
+                    <h2 class="section-title">Financial Information</h2>
+                    <p class="section-sub">Cost of education and details of the requested loan.</p>
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="Annual_Course_Fee">Annual Course Fee</label>
+                            <input type="number" id="Annual_Course_Fee" name="Annual_Course_Fee" required>
+                        </div>
+                        <div class="field">
+                            <label for="Total_Education_Cost">Total Education Cost</label>
+                            <input type="number" id="Total_Education_Cost" name="Total_Education_Cost" required>
+                        </div>
+                        <div class="field">
+                            <label for="Loan_Amount">Loan Amount</label>
+                            <input type="number" id="Loan_Amount" name="Loan_Amount" required>
+                        </div>
+                        <div class="field">
+                            <label for="Family_Monthly_Income">Family Monthly Income</label>
+                            <input type="number" id="Family_Monthly_Income" name="Family_Monthly_Income" required>
+                        </div>
+                        <div class="field">
+                            <label for="Family_Existing_EMI">Family Existing EMI</label>
+                            <input type="number" id="Family_Existing_EMI" name="Family_Existing_EMI" required>
+                        </div>
+                        <div class="field">
+                            <label for="Number_of_Dependents">Number of Dependents</label>
+                            <input type="number" id="Number_of_Dependents" name="Number_of_Dependents" required>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Admission Status:</label>
-        <input type="text" name="Admission_Status" required><br><br>
+                <div class="section">
+                    <h2 class="section-title">Additional Information</h2>
+                    <p class="section-sub">Academic background and co-applicant details.</p>
+                    <div class="field-grid">
+                        <div class="field full">
+                            <label for="Previous_Academic_Performance">Previous Academic Performance</label>
+                            <input type="text" id="Previous_Academic_Performance" name="Previous_Academic_Performance" required>
+                        </div>
+                        <div class="field">
+                            <label for="Co_Applicant_Occupation">Co-Applicant Occupation</label>
+                            <input type="text" id="Co_Applicant_Occupation" name="Co_Applicant_Occupation" required>
+                        </div>
+                        <div class="field">
+                            <label for="Co_Applicant_Monthly_Income">Co-Applicant Monthly Income</label>
+                            <input type="number" id="Co_Applicant_Monthly_Income" name="Co_Applicant_Monthly_Income" required>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Annual Course Fee:</label>
-        <input type="number" name="Annual_Course_Fee" required><br><br>
+                <div class="submit-row">
+                    <span class="submit-note">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <rect x="5" y="11" width="14" height="9" rx="2" stroke="#667085" stroke-width="1.5"/>
+                            <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#667085" stroke-width="1.5"/>
+                        </svg>
+                        Submitted securely
+                    </span>
+                    <button type="submit" class="btn-primary">Check Loan Eligibility</button>
+                </div>
 
-        <label>Total Education Cost:</label>
-        <input type="number" name="Total_Education_Cost" required><br><br>
+            </form>
+        </div>
 
-        <label>Loan Amount:</label>
-        <input type="number" name="Loan_Amount" required><br><br>
-
-        <label>Family Monthly Income:</label>
-        <input type="number" name="Family_Monthly_Income" required><br><br>
-
-        <label>Family Existing EMI:</label>
-        <input type="number" name="Family_Existing_EMI" required><br><br>
-
-        <label>Number of Dependents:</label>
-        <input type="number" name="Number_of_Dependents" required><br><br>
-
-        <label>Previous Academic Performance:</label>
-        <input type="text" name="Previous_Academic_Performance" required><br><br>
-
-        <label>Co-Applicant Occupation:</label>
-        <input type="text" name="Co_Applicant_Occupation" required><br><br>
-
-        <label>Co-Applicant Monthly Income:</label>
-        <input type="number" name="Co_Applicant_Monthly_Income" required><br><br>
-
-        <button type="submit">Check Loan Eligibility</button>
-
-    </form>
+    </main>
 
 </body>
 </html>
-```

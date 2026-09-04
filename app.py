@@ -976,6 +976,648 @@ def education_loan():
 
     return render_template("education_loan.html")
 
+# ================= HOME LOAN =================
+
+@app.route("/home-loan", methods=["GET", "POST"])
+def home_loan():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+
+        user_id = session["user_id"]
+
+        # Get Home Loan form data
+        Age = request.form["Age"]
+        Occupation = request.form["Occupation"]
+        Employment_Type = request.form["Employment_Type"]
+        Monthly_Income = request.form["Monthly_Income"]
+        Employment_Business_Duration = request.form["Employment_Business_Duration"]
+        Existing_Monthly_EMI = request.form["Existing_Monthly_EMI"]
+        Loan_Amount = request.form["Loan_Amount"]
+        Loan_Tenure = request.form["Loan_Tenure"]
+        Property_Value = request.form["Property_Value"]
+        Down_Payment = request.form["Down_Payment"]
+        Property_Type = request.form["Property_Type"]
+        Property_Location_Type = request.form["Property_Location_Type"]
+        Number_of_Dependents = request.form["Number_of_Dependents"]
+
+        try:
+
+            cursor = db.cursor()
+
+            # --------------------------------
+            # 1. CREATE LOAN APPLICATION
+            # --------------------------------
+
+            cursor.execute("""
+                INSERT INTO loan_applications
+                (
+                    user_id,
+                    loan_type,
+                    application_status
+                )
+                VALUES (%s, %s, %s)
+            """, (
+                user_id,
+                "Home Loan",
+                "Pending"
+            ))
+
+            application_id = cursor.lastrowid
+
+            # --------------------------------
+            # 2. SAVE HOME LOAN FEATURES
+            # --------------------------------
+
+            cursor.execute("""
+                INSERT INTO home_loans
+                (
+                    application_id,
+                    Age,
+                    Occupation,
+                    Employment_Type,
+                    Monthly_Income,
+                    Employment_Business_Duration,
+                    Existing_Monthly_EMI,
+                    Loan_Amount,
+                    Loan_Tenure,
+                    Property_Value,
+                    Down_Payment,
+                    Property_Type,
+                    Property_Location_Type,
+                    Number_of_Dependents
+                )
+                VALUES
+                (
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s
+                )
+            """, (
+                application_id,
+                Age,
+                Occupation,
+                Employment_Type,
+                Monthly_Income,
+                Employment_Business_Duration,
+                Existing_Monthly_EMI,
+                Loan_Amount,
+                Loan_Tenure,
+                Property_Value,
+                Down_Payment,
+                Property_Type,
+                Property_Location_Type,
+                Number_of_Dependents
+            ))
+
+            # --------------------------------
+            # 3. SAVE APPLICATION
+            # --------------------------------
+
+            db.commit()
+
+            cursor.close()
+
+            return "Home Loan Application Submitted Successfully"
+
+        except mysql.connector.Error as error:
+
+            db.rollback()
+
+            return "Database Error: " + str(error)
+
+    return render_template("home_loan.html")
+
+# ================= PERSONAL LOAN =================
+
+@app.route("/personal-loan", methods=["GET", "POST"])
+def personal_loan():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+
+        user_id = session["user_id"]
+
+        # Get Personal Loan form data
+        Age = request.form["Age"]
+        Occupation = request.form["Occupation"]
+        Employment_Type = request.form["Employment_Type"]
+        Monthly_Income = request.form["Monthly_Income"]
+        Employment_Business_Duration = request.form["Employment_Business_Duration"]
+        Existing_Monthly_EMI = request.form["Existing_Monthly_EMI"]
+        Loan_Amount = request.form["Loan_Amount"]
+        Loan_Tenure = request.form["Loan_Tenure"]
+        Loan_Purpose = request.form["Loan_Purpose"]
+        Number_of_Dependents = request.form["Number_of_Dependents"]
+        Monthly_Household_Expenses = request.form["Monthly_Household_Expenses"]
+        Monthly_Savings_Surplus = request.form["Monthly_Savings_Surplus"]
+        Residence_Type = request.form["Residence_Type"]
+        Employment_Business_Stability = request.form["Employment_Business_Stability"]
+
+        try:
+
+            cursor = db.cursor()
+
+            # --------------------------------
+            # 1. CREATE LOAN APPLICATION
+            # --------------------------------
+
+            cursor.execute("""
+                INSERT INTO loan_applications
+                (
+                    user_id,
+                    loan_type,
+                    application_status
+                )
+                VALUES (%s, %s, %s)
+            """, (
+                user_id,
+                "Personal Loan",
+                "Pending"
+            ))
+
+            application_id = cursor.lastrowid
+
+            # --------------------------------
+            # 2. SAVE PERSONAL LOAN FEATURES
+            # --------------------------------
+
+            cursor.execute("""
+                INSERT INTO personal_loans
+                (
+                    application_id,
+                    Age,
+                    Occupation,
+                    Employment_Type,
+                    Monthly_Income,
+                    Employment_Business_Duration,
+                    Existing_Monthly_EMI,
+                    Loan_Amount,
+                    Loan_Tenure,
+                    Loan_Purpose,
+                    Number_of_Dependents,
+                    Monthly_Household_Expenses,
+                    Monthly_Savings_Surplus,
+                    Residence_Type,
+                    Employment_Business_Stability
+                )
+                VALUES
+                (
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s
+                )
+            """, (
+                application_id,
+                Age,
+                Occupation,
+                Employment_Type,
+                Monthly_Income,
+                Employment_Business_Duration,
+                Existing_Monthly_EMI,
+                Loan_Amount,
+                Loan_Tenure,
+                Loan_Purpose,
+                Number_of_Dependents,
+                Monthly_Household_Expenses,
+                Monthly_Savings_Surplus,
+                Residence_Type,
+                Employment_Business_Stability
+            ))
+
+            # --------------------------------
+            # 3. SAVE APPLICATION
+            # --------------------------------
+
+            db.commit()
+
+            cursor.close()
+
+            return "Personal Loan Application Submitted Successfully"
+
+        except mysql.connector.Error as error:
+
+            db.rollback()
+
+            return "Database Error: " + str(error)
+
+    return render_template("personal_loan.html")
+
+# ================= VEHICLE LOAN =================
+
+@app.route("/vehicle-loan", methods=["GET", "POST"])
+def vehicle_loan():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+
+        user_id = session["user_id"]
+
+        # Get Vehicle Loan form data
+        Age = request.form["Age"]
+        Occupation = request.form["Occupation"]
+        Employment_Type = request.form["Employment_Type"]
+        Monthly_Income = request.form["Monthly_Income"]
+        Employment_Business_Duration = request.form["Employment_Business_Duration"]
+        Existing_Monthly_EMI = request.form["Existing_Monthly_EMI"]
+        Vehicle_Type = request.form["Vehicle_Type"]
+        Vehicle_Condition = request.form["Vehicle_Condition"]
+        Vehicle_Price = request.form["Vehicle_Price"]
+        Down_Payment = request.form["Down_Payment"]
+        Loan_Amount = request.form["Loan_Amount"]
+        Loan_Tenure = request.form["Loan_Tenure"]
+        Vehicle_Usage = request.form["Vehicle_Usage"]
+        Number_of_Dependents = request.form["Number_of_Dependents"]
+
+        try:
+
+            cursor = db.cursor()
+
+            # --------------------------------
+            # 1. CREATE LOAN APPLICATION
+            # --------------------------------
+
+            cursor.execute("""
+                INSERT INTO loan_applications
+                (
+                    user_id,
+                    loan_type,
+                    application_status
+                )
+                VALUES (%s, %s, %s)
+            """, (
+                user_id,
+                "Vehicle Loan",
+                "Pending"
+            ))
+
+            application_id = cursor.lastrowid
+
+            # --------------------------------
+            # 2. SAVE VEHICLE LOAN FEATURES
+            # --------------------------------
+
+            cursor.execute("""
+                INSERT INTO vehicle_loans
+                (
+                    application_id,
+                    Age,
+                    Occupation,
+                    Employment_Type,
+                    Monthly_Income,
+                    Employment_Business_Duration,
+                    Existing_Monthly_EMI,
+                    Vehicle_Type,
+                    Vehicle_Condition,
+                    Vehicle_Price,
+                    Down_Payment,
+                    Loan_Amount,
+                    Loan_Tenure,
+                    Vehicle_Usage,
+                    Number_of_Dependents
+                )
+                VALUES
+                (
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s
+                )
+            """, (
+                application_id,
+                Age,
+                Occupation,
+                Employment_Type,
+                Monthly_Income,
+                Employment_Business_Duration,
+                Existing_Monthly_EMI,
+                Vehicle_Type,
+                Vehicle_Condition,
+                Vehicle_Price,
+                Down_Payment,
+                Loan_Amount,
+                Loan_Tenure,
+                Vehicle_Usage,
+                Number_of_Dependents
+            ))
+
+            # --------------------------------
+            # 3. SAVE APPLICATION
+            # --------------------------------
+
+            db.commit()
+
+            cursor.close()
+
+            return "Vehicle Loan Application Submitted Successfully"
+
+        except mysql.connector.Error as error:
+
+            db.rollback()
+
+            return "Database Error: " + str(error)
+
+    return render_template("vehicle_loan.html")
+# ================= MANAGER DASHBOARD =================
+
+# ================= MANAGER HOME =================
+
+@app.route("/manager")
+def manager_home():
+    return render_template("manager_home.html")
+
+
+# ================= MANAGER REGISTER =================
+
+@app.route("/manager-register", methods=["GET", "POST"])
+def manager_register():
+
+    if request.method == "POST":
+
+        full_name = request.form["full_name"]
+        email = request.form["email"]
+        password = request.form["password"]
+
+        password_hash = generate_password_hash(password)
+
+        try:
+
+            cursor = db.cursor()
+
+            cursor.execute("""
+                INSERT INTO managers
+                (
+                    full_name,
+                    email,
+                    password_hash
+                )
+                VALUES (%s, %s, %s)
+            """, (
+                full_name,
+                email,
+                password_hash
+            ))
+
+            db.commit()
+            cursor.close()
+
+            return redirect(url_for("manager_login"))
+
+        except mysql.connector.Error as error:
+
+            db.rollback()
+
+            return "Database Error: " + str(error)
+
+    return render_template("manager_register.html")
+    
+# ================= CREATE MANAGER =================
+
+# ================= MANAGER LOGIN =================
+
+@app.route("/manager-login", methods=["GET", "POST"])
+def manager_login():
+
+    if request.method == "POST":
+
+        email = request.form["email"]
+        password = request.form["password"]
+
+        cursor = db.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT *
+            FROM managers
+            WHERE email = %s
+        """, (email,))
+
+        manager = cursor.fetchone()
+
+        cursor.close()
+
+        if manager:
+
+            if check_password_hash(
+                manager["password_hash"],
+                password
+            ):
+
+                session["manager_id"] = manager["id"]
+                session["manager_name"] = manager["full_name"]
+
+                return redirect(url_for("manager_dashboard"))
+
+        return "Invalid manager email or password"
+
+    return render_template("manager_login.html")
+
+# ================= MANAGER DASHBOARD =================
+
+@app.route("/manager-dashboard")
+def manager_dashboard():
+
+    if "manager_id" not in session:
+        return redirect(url_for("manager_login"))
+
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            id,
+            user_id,
+            loan_type,
+            application_status,
+            ai_prediction,
+            manager_decision,
+            rejection_reason,
+            applied_at
+        FROM loan_applications
+        ORDER BY applied_at DESC
+    """)
+
+    applications = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template(
+        "manager_dashboard.html",
+        applications=applications,
+        manager_name=session["manager_name"]
+    )
+    
+# ================= MANAGER APPLICATION DETAILS =================
+
+@app.route("/manager-application/<int:application_id>")
+def manager_application(application_id):
+
+    if "manager_id" not in session:
+        return redirect(url_for("manager_login"))
+
+    cursor = db.cursor(dictionary=True)
+
+    # Get main application
+    cursor.execute("""
+        SELECT
+            id,
+            user_id,
+            loan_type,
+            application_status,
+            ai_prediction,
+            manager_decision,
+            rejection_reason,
+            applied_at
+        FROM loan_applications
+        WHERE id = %s
+    """, (application_id,))
+
+    application = cursor.fetchone()
+
+    if not application:
+        cursor.close()
+        return "Loan application not found"
+
+    # Get customer details
+    cursor.execute("""
+        SELECT
+            full_name,
+            email,
+            phone
+        FROM users
+        WHERE id = %s
+    """, (application["user_id"],))
+
+    customer = cursor.fetchone()
+
+    # Get loan-specific details
+    loan_details = None
+
+    if application["loan_type"] == "Business Loan":
+
+        cursor.execute("""
+            SELECT *
+            FROM business_loans
+            WHERE application_id = %s
+        """, (application_id,))
+
+        loan_details = cursor.fetchone()
+
+    elif application["loan_type"] == "Education Loan":
+
+        cursor.execute("""
+            SELECT *
+            FROM education_loans
+            WHERE application_id = %s
+        """, (application_id,))
+
+        loan_details = cursor.fetchone()
+
+    elif application["loan_type"] == "Home Loan":
+
+        cursor.execute("""
+            SELECT *
+            FROM home_loans
+            WHERE application_id = %s
+        """, (application_id,))
+
+        loan_details = cursor.fetchone()
+
+    elif application["loan_type"] == "Personal Loan":
+
+        cursor.execute("""
+            SELECT *
+            FROM personal_loans
+            WHERE application_id = %s
+        """, (application_id,))
+
+        loan_details = cursor.fetchone()
+
+    elif application["loan_type"] == "Vehicle Loan":
+
+        cursor.execute("""
+            SELECT *
+            FROM vehicle_loans
+            WHERE application_id = %s
+        """, (application_id,))
+
+        loan_details = cursor.fetchone()
+
+    cursor.close()
+
+    return render_template(
+        "manager_application.html",
+        application=application,
+        customer=customer,
+        loan_details=loan_details
+    )
+    
+# ================= MANAGER LOAN DECISION =================
+
+@app.route("/manager-decision/<int:application_id>", methods=["POST"])
+def manager_decision(application_id):
+
+    if "manager_id" not in session:
+        return redirect(url_for("manager_login"))
+
+    decision = request.form["decision"]
+    rejection_reason = request.form.get("rejection_reason", "")
+
+    if decision not in ["Approved", "Rejected"]:
+        return "Invalid decision"
+
+    if decision == "Approved":
+        rejection_reason = None
+
+    try:
+
+        cursor = db.cursor()
+
+        cursor.execute("""
+            UPDATE loan_applications
+            SET
+                manager_decision = %s,
+                rejection_reason = %s,
+                application_status = %s
+            WHERE id = %s
+        """, (
+            decision,
+            rejection_reason,
+            decision,
+            application_id
+        ))
+
+        db.commit()
+        cursor.close()
+
+        return redirect(
+            url_for(
+                "manager_application",
+                application_id=application_id
+            )
+        )
+
+    except mysql.connector.Error as error:
+
+        db.rollback()
+
+        return "Database Error: " + str(error)
+    
+    
+# ================= MANAGER LOGOUT =================
+
+@app.route("/manager-logout")
+def manager_logout():
+
+    session.pop("manager_id", None)
+    session.pop("manager_name", None)
+
+    return redirect(url_for("manager_login"))
+
+
 
 
 # ================= LOGOUT =================

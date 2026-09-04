@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Banking System</title>
+<title>SecureBank | Complete Digital Banking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -398,6 +398,7 @@
     gap:22px;
   }
   .service-card{
+    display:block;
     background:var(--card);
     border:1px solid var(--border);
     border-radius:var(--radius-md);
@@ -425,6 +426,34 @@
   .service-card p{
     font-size:14.5px;
     color:var(--text-secondary);
+  }
+  .service-card .card-link{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:14px;
+    font-size:14px;
+    font-weight:600;
+    color:var(--royal);
+  }
+
+  /* ---------- Loan Services section ---------- */
+  .loan-services{background:var(--bg);}
+  .loan-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:22px;
+  }
+  .loan-card{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .loan-card p{
+    flex-grow:1;
+  }
+  .loan-card .btn{
+    margin-top:18px;
   }
 
   /* ---------- Security section ---------- */
@@ -578,6 +607,7 @@
     .hero-visual{height:340px;order:-1;}
     .trust-grid{grid-template-columns:repeat(2, 1fr);}
     .services-grid{grid-template-columns:repeat(2, 1fr);}
+    .loan-grid{grid-template-columns:repeat(2, 1fr);}
     .security .wrap{grid-template-columns:1fr;}
     .security-visual{height:240px;order:-1;}
     .footer-top{flex-direction:column;}
@@ -610,6 +640,7 @@
     section{padding:64px 0;}
     .trust-grid{grid-template-columns:1fr;}
     .services-grid{grid-template-columns:1fr;}
+    .loan-grid{grid-template-columns:1fr;}
     .hero-stats{flex-wrap:wrap;row-gap:20px;}
     .footer-links{flex-direction:column;gap:24px;}
     .footer-bottom{flex-direction:column;}
@@ -658,7 +689,7 @@
       <span class="hero-eyebrow"><span class="dot"></span>FDIC-style secure banking</span>
       <h1>Welcome to SecureBank</h1>
       <p class="headline">Banking made simple, secure, and built around you.</p>
-      <p class="desc">Manage your money with confidence. SecureBank gives you simple, secure tools to manage your account, move money, and stay in control of your finances.</p>
+      <p class="desc">Manage your money with confidence. SecureBank gives you simple, secure tools to manage your account, move money, track your history, and access a full range of loan services — all in one place.</p>
       <div class="hero-cta">
         <a href="/register" class="btn btn-primary">Register</a>
         <a href="/login" class="btn btn-secondary">Login to Your Account</a>
@@ -793,12 +824,64 @@
         <h3>Account Management</h3>
         <p>Access and manage your personal and account information.</p>
       </div>
-      <div class="service-card">
+      <a href="/apply-loan" class="service-card loan-gated">
         <span class="icon-circle">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 6.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5 2.2 3 5 3.5 5 1.6 5 3.5-2.2 3.5-5 3.5-5-1.6-5-3.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
         </span>
         <h3>Loan Services</h3>
         <p>Explore available banking and loan services.</p>
+        <span class="card-link">Apply now &rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="loan-services">
+  <div class="wrap">
+    <div class="section-heading">
+      <h2>Loan Services</h2>
+      <p>Choose the loan that fits your financial needs.</p>
+    </div>
+    <div class="loan-grid">
+      <div class="service-card loan-card">
+        <span class="icon-circle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="13" rx="2" stroke="#fff" stroke-width="1.6"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" stroke="#fff" stroke-width="1.6"/><path d="M3 12h18" stroke="#fff" stroke-width="1.6"/></svg>
+        </span>
+        <h3>Business Loan</h3>
+        <p>Financial support designed to help businesses manage expenses, expand operations, and grow.</p>
+        <a href="/business-loan" class="btn btn-secondary btn-sm loan-gated">Apply Now</a>
+      </div>
+      <div class="service-card loan-card">
+        <span class="icon-circle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 4.5-9 4.5-9-4.5L12 3z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5" stroke="#fff" stroke-width="1.6"/></svg>
+        </span>
+        <h3>Education Loan</h3>
+        <p>Support your education journey with financing for eligible courses, institutions, and education expenses.</p>
+        <a href="/education-loan" class="btn btn-secondary btn-sm loan-gated">Apply Now</a>
+      </div>
+      <div class="service-card loan-card">
+        <span class="icon-circle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-7 8 7" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9h12v-9" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 19v-5h4v5" stroke="#fff" stroke-width="1.6"/></svg>
+        </span>
+        <h3>Home Loan</h3>
+        <p>Financing support to help you purchase or build your home.</p>
+        <a href="/home-loan" class="btn btn-secondary btn-sm loan-gated">Apply Now</a>
+      </div>
+      <div class="service-card loan-card">
+        <span class="icon-circle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="#fff" stroke-width="1.6"/><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+        <h3>Personal Loan</h3>
+        <p>Flexible financing for personal financial needs and planned expenses.</p>
+        <a href="/personal-loan" class="btn btn-secondary btn-sm loan-gated">Apply Now</a>
+      </div>
+      <div class="service-card loan-card">
+        <span class="icon-circle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 16V11l2-4h12l2 4v5" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><rect x="3" y="16" width="18" height="3" rx="1" stroke="#fff" stroke-width="1.6"/><circle cx="7.5" cy="19.5" r="1.3" fill="#fff"/><circle cx="16.5" cy="19.5" r="1.3" fill="#fff"/></svg>
+        </span>
+        <h3>Vehicle Loan</h3>
+        <p>Financing support for purchasing a vehicle that fits your needs.</p>
+        <a href="/vehicle-loan" class="btn btn-secondary btn-sm loan-gated">Apply Now</a>
       </div>
     </div>
   </div>
@@ -852,7 +935,7 @@
   <div class="wrap">
     <h2>Ready to take control of your banking?</h2>
     <p>Open your SecureBank account today and experience simpler, smarter banking.</p>
-    <a href="/register" class="btn btn-primary">Registert</a>
+    <a href="/register" class="btn btn-primary">Register</a>
   </div>
 </section>
 
@@ -896,6 +979,12 @@
             <li><a href="/register">Register</a></li>
           </ul>
         </div>
+        <div>
+          <h4>Bank Staff</h4>
+          <ul>
+            <li><a href="/manager">Manager Portal</a></li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="footer-bottom">
@@ -914,6 +1003,36 @@
       navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
   }
+
+  /**
+   * Loan application gate.
+   * Loan pages must ALSO be protected on the server (session check on
+   * /apply-loan, /business-loan, /education-loan, /home-loan,
+   * /personal-loan, /vehicle-loan) — this client-side check only
+   * improves the UX by sending logged-out visitors straight to /login
+   * instead of letting them hit a loan page and bounce.
+   *
+   * Update isLoggedIn() below to match how your backend actually marks
+   * a session — e.g. change the cookie name, or read a different
+   * localStorage key / call an auth endpoint.
+   */
+  function isLoggedIn() {
+    var hasSessionCookie = document.cookie
+      .split('; ')
+      .some(function (c) { return c.indexOf('session=') === 0 || c.indexOf('token=') === 0; });
+    var hasLocalFlag = localStorage.getItem('isLoggedIn') === 'true';
+    return hasSessionCookie || hasLocalFlag;
+  }
+
+  document.querySelectorAll('.loan-gated').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      if (!isLoggedIn()) {
+        e.preventDefault();
+        var target = link.getAttribute('href');
+        window.location.href = '/login?redirect=' + encodeURIComponent(target);
+      }
+    });
+  });
 </script>
 
 </body>
