@@ -702,6 +702,281 @@ def account_details():
         "account_details.html",
         account=account
     )
+    
+@app.route('/apply-loan')
+def apply_loan():
+    return render_template('apply_loan.html')
+
+# ================= BUSINESS LOAN =================
+
+@app.route("/business-loan", methods=["GET", "POST"])
+def business_loan():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+
+        user_id = session["user_id"]
+
+        # Get Business Loan form data
+        Applicant_Age = request.form["Applicant_Age"]
+        Business_Type = request.form["Business_Type"]
+        Business_Age = request.form["Business_Age"]
+        Monthly_Business_Revenue = request.form["Monthly_Business_Revenue"]
+        Monthly_Business_Expenses = request.form["Monthly_Business_Expenses"]
+        Monthly_Business_Profit = request.form["Monthly_Business_Profit"]
+        Existing_Business_EMI = request.form["Existing_Business_EMI"]
+        Loan_Amount = request.form["Loan_Amount"]
+        Loan_Tenure = request.form["Loan_Tenure"]
+        Number_of_Employees = request.form["Number_of_Employees"]
+        Business_Registration = request.form["Business_Registration"]
+        GST_Registration = request.form["GST_Registration"]
+        Annual_Turnover = request.form["Annual_Turnover"]
+        Business_Location_Type = request.form["Business_Location_Type"]
+        Loan_Purpose = request.form["Loan_Purpose"]
+        Collateral_Available = request.form["Collateral_Available"]
+
+        try:
+
+            cursor = db.cursor()
+
+            # --------------------------------
+            # 1. CREATE LOAN APPLICATION
+            # --------------------------------
+
+            application_query = """
+                INSERT INTO loan_applications
+                (
+                    user_id,
+                    loan_type,
+                    application_status
+                )
+                VALUES (%s, %s, %s)
+            """
+
+            cursor.execute(
+                application_query,
+                (
+                    user_id,
+                    "Business Loan",
+                    "Pending"
+                )
+            )
+
+            # Get application ID
+            application_id = cursor.lastrowid
+
+            # --------------------------------
+            # 2. SAVE BUSINESS LOAN FEATURES
+            # --------------------------------
+
+            loan_query = """
+                INSERT INTO business_loans
+                (
+                    user_id,
+                    Applicant_Age,
+                    Business_Type,
+                    Business_Age,
+                    Monthly_Business_Revenue,
+                    Monthly_Business_Expenses,
+                    Monthly_Business_Profit,
+                    Existing_Business_EMI,
+                    Loan_Amount,
+                    Loan_Tenure,
+                    Number_of_Employees,
+                    Business_Registration,
+                    GST_Registration,
+                    Annual_Turnover,
+                    Business_Location_Type,
+                    Loan_Purpose,
+                    Collateral_Available,
+                    application_id
+                )
+                VALUES
+                (
+                    %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s
+                )
+            """
+
+            cursor.execute(
+                loan_query,
+                (
+                    user_id,
+                    Applicant_Age,
+                    Business_Type,
+                    Business_Age,
+                    Monthly_Business_Revenue,
+                    Monthly_Business_Expenses,
+                    Monthly_Business_Profit,
+                    Existing_Business_EMI,
+                    Loan_Amount,
+                    Loan_Tenure,
+                    Number_of_Employees,
+                    Business_Registration,
+                    GST_Registration,
+                    Annual_Turnover,
+                    Business_Location_Type,
+                    Loan_Purpose,
+                    Collateral_Available,
+                    application_id
+                )
+            )
+
+            # --------------------------------
+            # 3. SAVE APPLICATION
+            # --------------------------------
+
+            db.commit()
+
+            cursor.close()
+
+            return "Business Loan Application Submitted Successfully"
+
+        except mysql.connector.Error as error:
+
+            db.rollback()
+
+            return "Database Error: " + str(error)
+
+    return render_template("business_loan.html")
+
+# ================= EDUCATION LOAN =================
+
+@app.route("/education-loan", methods=["GET", "POST"])
+def education_loan():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+
+        user_id = session["user_id"]
+
+        # Get form data
+        Age = request.form["Age"]
+        Education_Level = request.form["Education_Level"]
+        Course_Type = request.form["Course_Type"]
+        Course_Duration = request.form["Course_Duration"]
+        Institution_Type = request.form["Institution_Type"]
+        Institution_Location = request.form["Institution_Location"]
+        Admission_Status = request.form["Admission_Status"]
+        Annual_Course_Fee = request.form["Annual_Course_Fee"]
+        Total_Education_Cost = request.form["Total_Education_Cost"]
+        Loan_Amount = request.form["Loan_Amount"]
+        Family_Monthly_Income = request.form["Family_Monthly_Income"]
+        Family_Existing_EMI = request.form["Family_Existing_EMI"]
+        Number_of_Dependents = request.form["Number_of_Dependents"]
+        Previous_Academic_Performance = request.form["Previous_Academic_Performance"]
+        Co_Applicant_Occupation = request.form["Co_Applicant_Occupation"]
+        Co_Applicant_Monthly_Income = request.form["Co_Applicant_Monthly_Income"]
+
+        try:
+
+            cursor = db.cursor()
+
+            # --------------------------------
+            # 1. CREATE LOAN APPLICATION
+            # --------------------------------
+
+            application_query = """
+                INSERT INTO loan_applications
+                (
+                    user_id,
+                    loan_type,
+                    application_status
+                )
+                VALUES (%s, %s, %s)
+            """
+
+            cursor.execute(
+                application_query,
+                (
+                    user_id,
+                    "Education Loan",
+                    "Pending"
+                )
+            )
+
+            application_id = cursor.lastrowid
+
+            # --------------------------------
+            # 2. SAVE EDUCATION LOAN FEATURES
+            # --------------------------------
+
+            loan_query = """
+                INSERT INTO education_loans
+                (
+                    application_id,
+                    Age,
+                    Education_Level,
+                    Course_Type,
+                    Course_Duration,
+                    Institution_Type,
+                    Institution_Location,
+                    Admission_Status,
+                    Annual_Course_Fee,
+                    Total_Education_Cost,
+                    Loan_Amount,
+                    Family_Monthly_Income,
+                    Family_Existing_EMI,
+                    Number_of_Dependents,
+                    Previous_Academic_Performance,
+                    Co_Applicant_Occupation,
+                    Co_Applicant_Monthly_Income
+                )
+                VALUES
+                (
+                    %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s
+                )
+            """
+
+            cursor.execute(
+                loan_query,
+                (
+                    application_id,
+                    Age,
+                    Education_Level,
+                    Course_Type,
+                    Course_Duration,
+                    Institution_Type,
+                    Institution_Location,
+                    Admission_Status,
+                    Annual_Course_Fee,
+                    Total_Education_Cost,
+                    Loan_Amount,
+                    Family_Monthly_Income,
+                    Family_Existing_EMI,
+                    Number_of_Dependents,
+                    Previous_Academic_Performance,
+                    Co_Applicant_Occupation,
+                    Co_Applicant_Monthly_Income
+                )
+            )
+
+            # --------------------------------
+            # 3. SAVE
+            # --------------------------------
+
+            db.commit()
+
+            cursor.close()
+
+            return "Education Loan Application Submitted Successfully"
+
+        except mysql.connector.Error as error:
+
+            db.rollback()
+
+            return "Database Error: " + str(error)
+
+    return render_template("education_loan.html")
+
+
 
 # ================= LOGOUT =================
 
