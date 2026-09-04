@@ -1,62 +1,399 @@
-```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Personal Loan Application</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Loan Application | SecureBank</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --navy: #0B1F3A;
+        --royal: #1E4D8F;
+        --gold: #D4AF37;
+        --bg: #F5F7FA;
+        --white: #FFFFFF;
+        --text: #172033;
+        --text-secondary: #667085;
+        --border: #E4E7EC;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+    }
+
+    /* Header */
+    .site-header {
+        background: var(--navy);
+        padding: 18px 32px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--white);
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: 0.2px;
+    }
+
+    .brand svg {
+        flex-shrink: 0;
+    }
+
+    .brand .gold-dot {
+        color: var(--gold);
+    }
+
+    /* Page layout */
+    .page-wrap {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 40px 20px 80px;
+    }
+
+    .page-header {
+        margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+        color: var(--navy);
+    }
+
+    .page-header p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    /* Notice box */
+    .notice-box {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        background: #EEF3FB;
+        border: 1px solid #D6E2F2;
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin-bottom: 28px;
+        font-size: 13.5px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+    }
+
+    .notice-box svg {
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    /* Card */
+    .card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+        padding: 32px;
+    }
+
+    .form-section {
+        margin-bottom: 32px;
+    }
+
+    .form-section:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .section-title {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--royal);
+        margin: 0 0 4px 0;
+    }
+
+    .section-sub {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin: 0 0 16px 0;
+    }
+
+    .section-divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 28px 0;
+    }
+
+    .field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 20px;
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .field.full-width {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        background: var(--white);
+        font-family: inherit;
+        font-size: 14px;
+        color: var(--text);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--royal);
+        box-shadow: 0 0 0 3px rgba(30, 77, 143, 0.12);
+    }
+
+    input::placeholder {
+        color: #98A2B3;
+    }
+
+    .submit-row {
+        margin-top: 32px;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--navy), var(--royal));
+        color: var(--white);
+        border: none;
+        border-radius: 10px;
+        padding: 14px 28px;
+        font-size: 15px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: filter 0.15s ease, transform 0.05s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary:hover {
+        filter: brightness(1.12);
+    }
+
+    .btn-primary:active {
+        transform: translateY(1px);
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+        .page-wrap {
+            padding: 32px 16px 60px;
+        }
+
+        .card {
+            padding: 24px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .site-header {
+            padding: 16px 20px;
+        }
+
+        .page-header h1 {
+            font-size: 22px;
+        }
+
+        .card {
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .field-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .submit-row {
+            justify-content: stretch;
+        }
+
+        .btn-primary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
 </head>
 
 <body>
 
-    <h1>Personal Loan Application</h1>
+    <header class="site-header">
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L3 6V11C3 16.05 6.84 20.74 12 22C17.16 20.74 21 16.05 21 11V6L12 2Z" stroke="#D4AF37" stroke-width="1.6" stroke-linejoin="round"/>
+                <path d="M9 12L11 14L15.5 9.5" stroke="#D4AF37" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            SecureBank
+        </div>
+    </header>
 
-    <form method="POST" action="/personal-loan">
+    <div class="page-wrap">
 
-        <label>Age:</label>
-        <input type="number" name="Age" required><br><br>
+        <div class="page-header">
+            <h1>Personal Loan</h1>
+            <p>Complete your application with the required personal and financial information.</p>
+        </div>
 
-        <label>Occupation:</label>
-        <input type="text" name="Occupation" required><br><br>
+        <div class="notice-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L3 6V11C3 16.05 6.84 20.74 12 22C17.16 20.74 21 16.05 21 11V6L12 2Z" stroke="#1E4D8F" stroke-width="1.6" stroke-linejoin="round"/>
+                <path d="M9 12L11 14L15.5 9.5" stroke="#1E4D8F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Your information is kept secure and confidential. Once submitted, your application will be reviewed by our banking team, and you will be notified of the outcome.</span>
+        </div>
 
-        <label>Employment Type:</label>
-        <input type="text" name="Employment_Type" required><br><br>
+        <div class="card">
+            <form method="POST" action="/personal-loan">
 
-        <label>Monthly Income:</label>
-        <input type="number" name="Monthly_Income" required><br><br>
+                <div class="form-section">
+                    <p class="section-title">Personal Information</p>
+                    <p class="section-sub">Basic details about you.</p>
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="Age">Age</label>
+                            <input type="number" id="Age" name="Age" placeholder="e.g. 32" required>
+                        </div>
+                        <div class="field">
+                            <label for="Occupation">Occupation</label>
+                            <input type="text" id="Occupation" name="Occupation" placeholder="e.g. Software Engineer" required>
+                        </div>
+                        <div class="field">
+                            <label for="Number_of_Dependents">Number of Dependents</label>
+                            <input type="number" id="Number_of_Dependents" name="Number_of_Dependents" placeholder="e.g. 2" required>
+                        </div>
+                        <div class="field">
+                            <label for="Residence_Type">Residence Type</label>
+                            <input type="text" id="Residence_Type" name="Residence_Type" placeholder="e.g. Owned, Rented" required>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Employment/Business Duration:</label>
-        <input type="number" step="0.1" name="Employment_Business_Duration" required><br><br>
+                <hr class="section-divider">
 
-        <label>Existing Monthly EMI:</label>
-        <input type="number" name="Existing_Monthly_EMI" required><br><br>
+                <div class="form-section">
+                    <p class="section-title">Employment / Business Information</p>
+                    <p class="section-sub">Details about your current employment or business.</p>
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="Employment_Type">Employment Type</label>
+                            <input type="text" id="Employment_Type" name="Employment_Type" placeholder="e.g. Salaried, Self-Employed" required>
+                        </div>
+                        <div class="field">
+                            <label for="Employment_Business_Duration">Employment / Business Duration (years)</label>
+                            <input type="number" step="0.1" id="Employment_Business_Duration" name="Employment_Business_Duration" placeholder="e.g. 4.5" required>
+                        </div>
+                        <div class="field full-width">
+                            <label for="Employment_Business_Stability">Employment / Business Stability</label>
+                            <input type="text" id="Employment_Business_Stability" name="Employment_Business_Stability" placeholder="e.g. Stable, Variable" required>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Loan Amount:</label>
-        <input type="number" name="Loan_Amount" required><br><br>
+                <hr class="section-divider">
 
-        <label>Loan Tenure:</label>
-        <input type="number" name="Loan_Tenure" required><br><br>
+                <div class="form-section">
+                    <p class="section-title">Financial Information</p>
+                    <p class="section-sub">Your income, expenses, and existing obligations.</p>
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="Monthly_Income">Monthly Income</label>
+                            <input type="number" id="Monthly_Income" name="Monthly_Income" placeholder="e.g. 65000" required>
+                        </div>
+                        <div class="field">
+                            <label for="Existing_Monthly_EMI">Existing Monthly EMI</label>
+                            <input type="number" id="Existing_Monthly_EMI" name="Existing_Monthly_EMI" placeholder="e.g. 5000" required>
+                        </div>
+                        <div class="field">
+                            <label for="Monthly_Household_Expenses">Monthly Household Expenses</label>
+                            <input type="number" id="Monthly_Household_Expenses" name="Monthly_Household_Expenses" placeholder="e.g. 20000" required>
+                        </div>
+                        <div class="field">
+                            <label for="Monthly_Savings_Surplus">Monthly Savings Surplus</label>
+                            <input type="number" id="Monthly_Savings_Surplus" name="Monthly_Savings_Surplus" placeholder="e.g. 10000" required>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Loan Purpose:</label>
-        <input type="text" name="Loan_Purpose" required><br><br>
+                <hr class="section-divider">
 
-        <label>Number of Dependents:</label>
-        <input type="number" name="Number_of_Dependents" required><br><br>
+                <div class="form-section">
+                    <p class="section-title">Loan Information</p>
+                    <p class="section-sub">Details about the loan you are applying for.</p>
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="Loan_Amount">Loan Amount</label>
+                            <input type="number" id="Loan_Amount" name="Loan_Amount" placeholder="e.g. 500000" required>
+                        </div>
+                        <div class="field">
+                            <label for="Loan_Tenure">Loan Tenure (months)</label>
+                            <input type="number" id="Loan_Tenure" name="Loan_Tenure" placeholder="e.g. 36" required>
+                        </div>
+                        <div class="field full-width">
+                            <label for="Loan_Purpose">Loan Purpose</label>
+                            <input type="text" id="Loan_Purpose" name="Loan_Purpose" placeholder="e.g. Medical, Travel, Wedding" required>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Monthly Household Expenses:</label>
-        <input type="number" name="Monthly_Household_Expenses" required><br><br>
+                <div class="submit-row">
+                    <button type="submit" class="btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L3 6V11C3 16.05 6.84 20.74 12 22C17.16 20.74 21 16.05 21 11V6L12 2Z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
+                        </svg>
+                        Check Loan Eligibility
+                    </button>
+                </div>
 
-        <label>Monthly Savings Surplus:</label>
-        <input type="number" name="Monthly_Savings_Surplus" required><br><br>
+            </form>
+        </div>
 
-        <label>Residence Type:</label>
-        <input type="text" name="Residence_Type" required><br><br>
-
-        <label>Employment/Business Stability:</label>
-        <input type="text" name="Employment_Business_Stability" required><br><br>
-
-        <button type="submit">Check Loan Eligibility</button>
-
-    </form>
+    </div>
 
 </body>
 </html>
-```

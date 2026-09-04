@@ -6,6 +6,225 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>SecureBank - Manager Login</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy: #0B1F3A;
+            --royal: #1E4D8F;
+            --gold: #D4AF37;
+            --bg: #F5F7FA;
+            --white: #FFFFFF;
+            --text: #172033;
+            --text-secondary: #667085;
+            --border: #E4E7EC;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: var(--navy);
+            padding: 18px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        header h2 {
+            color: var(--white);
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: -0.02em;
+        }
+
+        header nav {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        header nav a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        header nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+        }
+
+        /* Main */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 20px;
+        }
+
+        .login-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px 36px;
+        }
+
+        .login-card .icon-shield {
+            width: 44px;
+            height: 44px;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(30, 77, 143, 0.08);
+            border-radius: 10px;
+        }
+
+        .login-card h1 {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .login-card p.subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            background: var(--white);
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text);
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--royal);
+            box-shadow: 0 0 0 3px rgba(30, 77, 143, 0.12);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--navy), var(--royal));
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            padding: 13px 20px;
+            font-weight: 600;
+            font-size: 15px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: filter 0.15s ease, transform 0.05s ease;
+            margin-top: 6px;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+
+        .register-note {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 24px;
+        }
+
+        .register-note a {
+            color: var(--royal);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .register-note a:hover {
+            text-decoration: underline;
+        }
+
+        .secure-note {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 12.5px;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+
+        @media (max-width: 640px) {
+            header {
+                padding: 16px 20px;
+            }
+
+            .login-card {
+                padding: 32px 24px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -21,47 +240,55 @@
 
     </header>
 
-    <hr>
-
     <main>
 
-        <h1>Manager Login</h1>
+        <div class="login-card">
 
-        <p>Login to access the SecureBank Manager Portal.</p>
+            <div class="icon-shield" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L4 5V11C4 16.55 7.84 21.74 12 23C16.16 21.74 20 16.55 20 11V5L12 2Z" stroke="#1E4D8F" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M9 12L11 14L15.5 9.5" stroke="#1E4D8F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
 
-        <form method="POST" action="/manager-login">
+            <h1>Manager Login</h1>
+            <p class="subtitle">Login to access the SecureBank Manager Portal.</p>
 
-            <label>Email:</label>
-            <br>
-            <input type="email" name="email" required>
+            <form method="POST" action="/manager-login">
 
-            <br><br>
+                <div class="field">
+                    <label for="manager-email">Email</label>
+                    <input type="email" id="manager-email" name="email" placeholder="you@securebank.com" required>
+                </div>
 
-            <label>Password:</label>
-            <br>
-            <input type="password" name="password" required>
+                <div class="field">
+                    <label for="manager-password">Password</label>
+                    <input type="password" id="manager-password" name="password" placeholder="Enter your password" required>
+                </div>
 
-            <br><br>
+                <button type="submit" class="btn-primary">Login</button>
 
-            <button type="submit">Login</button>
+            </form>
 
-        </form>
+            <p class="register-note">
+                Don't have a manager account?
+                <a href="/manager-register">Register here</a>
+            </p>
 
-        <br>
+            <div class="secure-note" aria-hidden="false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="5" y="11" width="14" height="9" rx="2" stroke="#667085" stroke-width="1.5"/>
+                    <path d="M8 11V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V11" stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span>Your connection to this portal is secure.</span>
+            </div>
 
-        <p>
-            Don't have a manager account?
-            <a href="/manager-register">Register here</a>
-        </p>
+        </div>
 
     </main>
 
-    <hr>
-
     <footer>
-
         <p>SecureBank Manager Portal</p>
-
     </footer>
 
 </body>

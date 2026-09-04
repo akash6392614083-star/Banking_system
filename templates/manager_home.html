@@ -4,54 +4,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>SecureBank - Manager Portal</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy: #0B1F3A;
+            --royal: #1E4D8F;
+            --gold: #D4AF37;
+            --bg: #F5F7FA;
+            --white: #FFFFFF;
+            --text: #172033;
+            --text-secondary: #667085;
+            --border: #E4E7EC;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Header */
+        header {
+            background: var(--navy);
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        header h2 {
+            color: var(--white);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        header h2 svg {
+            flex-shrink: 0;
+        }
+
+        header nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        header nav a {
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 9px 14px;
+            border-radius: 8px;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        header nav a:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--white);
+        }
+
+        header nav a.primary {
+            background: var(--gold);
+            color: var(--navy);
+            font-weight: 600;
+        }
+
+        header nav a.primary:hover {
+            background: #c9a52f;
+        }
+
+        /* Main */
+        main {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 72px 24px 88px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(30, 77, 143, 0.08);
+            color: var(--royal);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .hero {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 48px;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--navy);
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 64px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 26px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+            transition: filter 0.15s ease, transform 0.15s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--navy), var(--royal));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--navy);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--royal);
+            color: var(--royal);
+        }
+
+        /* Feature cards */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+            padding: 28px 24px;
+        }
+
+        .card .icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(11, 31, 58, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            padding: 28px 24px;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        footer p:first-child {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 980px) {
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            header nav {
+                width: 100%;
+            }
+
+            header nav a {
+                flex: 1;
+                text-align: center;
+            }
+
+            main {
+                padding: 48px 18px 64px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
     <header>
-
-        <h2>SecureBank</h2>
+        <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M12 2L4 5.5V11C4 16.5 7.4 21.2 12 22.5C16.6 21.2 20 16.5 20 11V5.5L12 2Z" stroke="#D4AF37" stroke-width="1.6" stroke-linejoin="round" />
+            </svg>
+            SecureBank
+        </h2>
 
         <nav>
             <a href="/">Customer Portal</a>
             <a href="/manager-login">Manager Login</a>
-            <a href="/manager-register">Manager Register</a>
+            <a href="/manager-register" class="primary">Manager Register</a>
         </nav>
-
     </header>
-
-    <hr>
 
     <main>
 
-        <h1>Welcome to SecureBank Manager Portal</h1>
+        <div class="hero">
+            <span class="badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 2L4 5.5V11C4 16.5 7.4 21.2 12 22.5C16.6 21.2 20 16.5 20 11V5.5L12 2Z" stroke="#1E4D8F" stroke-width="1.8" stroke-linejoin="round" />
+                </svg>
+                Authorized staff access
+            </span>
+            <h1>Welcome to SecureBank Manager Portal</h1>
+            <p>
+                SecureBank Manager Portal is designed for bank managers
+                to securely manage customer loan applications.
+            </p>
+        </div>
 
-        <p>
-            SecureBank Manager Portal is designed for bank managers
-            to securely manage customer loan applications.
-        </p>
+        <div class="actions">
+            <a href="/manager-login">
+                <button class="btn btn-primary">Manager Login</button>
+            </a>
+            <a href="/manager-register">
+                <button class="btn btn-secondary">Manager Register</button>
+            </a>
+        </div>
 
-        <br>
+        <div class="features">
+            <div class="card">
+                <div class="icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect x="4" y="10" width="16" height="10" rx="2" stroke="#0B1F3A" stroke-width="1.6" />
+                        <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#0B1F3A" stroke-width="1.6" />
+                    </svg>
+                </div>
+                <h3>Secure Access</h3>
+                <p>Every session is protected with authenticated, role-based staff access.</p>
+            </div>
 
-        <a href="/manager-login">
-            <button>Manager Login</button>
-        </a>
+            <div class="card">
+                <div class="icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M4 19V5m0 14h16M8 15v3m5-8v8m5-4v4" stroke="#0B1F3A" stroke-width="1.6" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <h3>Application Oversight</h3>
+                <p>Review, track, and manage customer loan applications in one place.</p>
+            </div>
 
-        <a href="/manager-register">
-            <button>Manager Register</button>
-        </a>
+            <div class="card">
+                <div class="icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M9 12l2 2 4-4" stroke="#0B1F3A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        <circle cx="12" cy="12" r="9" stroke="#0B1F3A" stroke-width="1.6" />
+                    </svg>
+                </div>
+                <h3>Reliable Decisions</h3>
+                <p>Make informed, consistent decisions backed by clear application data.</p>
+            </div>
+        </div>
 
     </main>
 
-    <hr>
-
     <footer>
-
         <p>SecureBank Manager Portal</p>
         <p>Authorized bank staff access only.</p>
-
     </footer>
 
 </body>
