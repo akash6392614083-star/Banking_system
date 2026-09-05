@@ -443,18 +443,31 @@
                     </span>
                 </div>
 
-                <div class="info-row">
-                    <span class="info-label">AI Prediction</span>
-                    <span class="info-value">
-                        {% if application.ai_prediction == "Approved" %}
-                            <span class="badge badge-approved">Approved Recommendation</span>
-                        {% elif application.ai_prediction == "Rejected" %}
-                            <span class="badge badge-rejected">Rejected Recommendation</span>
-                        {% else %}
-                            <span class="badge badge-default">Not Evaluated</span>
-                        {% endif %}
-                    </span>
-                </div>
+                
+            <div class="info-row">
+                <span class="info-label">AI Prediction</span>
+                <span class="info-value">
+
+                    {% if application.ai_prediction == 1 %}
+                        <span class="badge badge-approved">
+                            Approved Recommendation
+                        </span>
+
+                    {% elif application.ai_prediction == 0 %}
+                        <span class="badge badge-rejected">
+                            Rejected Recommendation
+                        </span>
+
+                    {% else %}
+                        <span class="badge badge-default">
+                            Not Evaluated
+                        </span>
+                    {% endif %}
+
+                </span>
+            </div>
+
+
 
                 <div class="info-row">
                     <span class="info-label">Manager Decision</span>

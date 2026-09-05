@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import mysql.connector
 import random
+import pandas as pd
+import pickle
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -19,6 +22,20 @@ db = mysql.connector.connect(
 
 
 # ================= HOME =================
+with open("business_loan_model.pkl", "rb") as file:
+    business_loan_model = pickle.load(file)
+
+with open("education_loan_model.pkl", "rb") as file:
+    education_loan_model = pickle.load(file)
+
+with open("home_loan_model.pkl", "rb") as file:
+    home_loan_model = pickle.load(file)
+
+with open("personal_loan_model.pkl", "rb") as file:
+    personal_loan_model = pickle.load(file)
+
+with open("vehicle_loan_model.pkl", "rb") as file:
+    vehicle_loan_model = pickle.load(file)
 
 @app.route("/")
 def home():
@@ -1458,154 +1475,315 @@ def manager_application(application_id):
     if "manager_id" not in session:
         return redirect(url_for("manager_login"))
 
-    cursor = db.cursor(dictionary=True)
-
-    # Get main application
-    cursor.execute("""
-        SELECT
-            id,
-            user_id,
-            loan_type,
-            application_status,
-            ai_prediction,
-            manager_decision,
-            rejection_reason,
-            applied_at
-        FROM loan_applications
-        WHERE id = %s
-    """, (application_id,))
-
-    application = cursor.fetchone()
-
-    if not application:
-        cursor.close()
-        return "Loan application not found"
-
-    # Get customer details
-    cursor.execute("""
-        SELECT
-            full_name,
-            email,
-            phone
-        FROM users
-        WHERE id = %s
-    """, (application["user_id"],))
-
-    customer = cursor.fetchone()
-
-    # Get loan-specific details
-    loan_details = None
-
-    if application["loan_type"] == "Business Loan":
-
-        cursor.execute("""
-            SELECT *
-            FROM business_loans
-            WHERE application_id = %s
-        """, (application_id,))
-
-        loan_details = cursor.fetchone()
-
-    elif application["loan_type"] == "Education Loan":
-
-        cursor.execute("""
-            SELECT *
-            FROM education_loans
-            WHERE application_id = %s
-        """, (application_id,))
-
-        loan_details = cursor.fetchone()
-
-    elif application["loan_type"] == "Home Loan":
-
-        cursor.execute("""
-            SELECT *
-            FROM home_loans
-            WHERE application_id = %s
-        """, (application_id,))
-
-        loan_details = cursor.fetchone()
-
-    elif application["loan_type"] == "Personal Loan":
-
-        cursor.execute("""
-            SELECT *
-            FROM personal_loans
-            WHERE application_id = %s
-        """, (application_id,))
-
-        loan_details = cursor.fetchone()
-
-    elif application["loan_type"] == "Vehicle Loan":
-
-        cursor.execute("""
-            SELECT *
-            FROM vehicle_loans
-            WHERE application_id = %s
-        """, (application_id,))
-
-        loan_details = cursor.fetchone()
-
-    cursor.close()
-
-    return render_template(
-        "manager_application.html",
-        application=application,
-        customer=customer,
-        loan_details=loan_details
-    )
-    
-# ================= MANAGER LOAN DECISION =================
-
-@app.route("/manager-decision/<int:application_id>", methods=["POST"])
-def manager_decision(application_id):
-
-    if "manager_id" not in session:
-        return redirect(url_for("manager_login"))
-
-    decision = request.form["decision"]
-    rejection_reason = request.form.get("rejection_reason", "")
-
-    if decision not in ["Approved", "Rejected"]:
-        return "Invalid decision"
-
-    if decision == "Approved":
-        rejection_reason = None
-
     try:
+        cursor = db.cursor(dictionary=True)
 
-        cursor = db.cursor()
-
+        # Get main application
         cursor.execute("""
-            UPDATE loan_applications
-            SET
-                manager_decision = %s,
-                rejection_reason = %s,
-                application_status = %s
+            SELECT *
+            FROM loan_applications
             WHERE id = %s
-        """, (
-            decision,
-            rejection_reason,
-            decision,
-            application_id
-        ))
+        """, (application_id,))
 
-        db.commit()
+        application = cursor.fetchone()
+
+        if not application:
+            cursor.close()
+            return "Application not found"
+
+        loan_type = application["loan_type"]
+
+        # ==========================================
+        # BUSINESS LOAN
+        # ==========================================
+
+        if loan_type == "Business Loan":
+
+            cursor.execute("""
+                SELECT *
+                FROM business_loans
+                WHERE application_id = %s
+            """, (application_id,))
+
+            loan_details = cursor.fetchone()
+
+            if not loan_details:
+                cursor.close()
+                return "Business loan details not found"
+
+            if application["ai_prediction"] is None:
+
+                features = {
+                    "Applicant_Age": loan_details["Applicant_Age"],
+                    "Business_Type": loan_details["Business_Type"],
+                    "Business_Age": loan_details["Business_Age"],
+                    "Monthly_Business_Revenue": loan_details["Monthly_Business_Revenue"],
+                    "Monthly_Business_Expenses": loan_details["Monthly_Business_Expenses"],
+                    "Monthly_Business_Profit": loan_details["Monthly_Business_Profit"],
+                    "Existing_Business_EMI": loan_details["Existing_Business_EMI"],
+                    "Loan_Amount": loan_details["Loan_Amount"],
+                    "Loan_Tenure": loan_details["Loan_Tenure"],
+                    "Number_of_Employees": loan_details["Number_of_Employees"],
+                    "Business_Registration": loan_details["Business_Registration"],
+                    "GST_Registration": loan_details["GST_Registration"],
+                    "Annual_Turnover": loan_details["Annual_Turnover"],
+                    "Business_Location_Type": loan_details["Business_Location_Type"],
+                    "Loan_Purpose": loan_details["Loan_Purpose"],
+                    "Collateral_Available": loan_details["Collateral_Available"]
+                }
+
+                input_data = pd.DataFrame([features])
+
+                prediction = business_loan_model.predict(input_data)
+
+                ai_prediction = int(prediction[0])
+
+                cursor.execute("""
+                    UPDATE loan_applications
+                    SET ai_prediction = %s
+                    WHERE id = %s
+                """, (ai_prediction, application_id))
+
+                db.commit()
+
+                application["ai_prediction"] = ai_prediction
+
+
+        # ==========================================
+        # EDUCATION LOAN
+        # ==========================================
+
+        elif loan_type == "Education Loan":
+
+            cursor.execute("""
+                SELECT *
+                FROM education_loans
+                WHERE application_id = %s
+            """, (application_id,))
+
+            loan_details = cursor.fetchone()
+
+            if not loan_details:
+                cursor.close()
+                return "Education loan details not found"
+
+            if application["ai_prediction"] is None:
+
+                features = {
+                    "Age": loan_details["Age"],
+                    "Education_Level": loan_details["Education_Level"],
+                    "Course_Type": loan_details["Course_Type"],
+                    "Course_Duration": loan_details["Course_Duration"],
+                    "Institution_Type": loan_details["Institution_Type"],
+                    "Institution_Location": loan_details["Institution_Location"],
+                    "Admission_Status": loan_details["Admission_Status"],
+                    "Annual_Course_Fee": loan_details["Annual_Course_Fee"],
+                    "Total_Education_Cost": loan_details["Total_Education_Cost"],
+                    "Loan_Amount": loan_details["Loan_Amount"],
+                    "Family_Monthly_Income": loan_details["Family_Monthly_Income"],
+                    "Family_Existing_EMI": loan_details["Family_Existing_EMI"],
+                    "Number_of_Dependents": loan_details["Number_of_Dependents"],
+                    "Previous_Academic_Performance": loan_details["Previous_Academic_Performance"],
+                    "Co_Applicant_Occupation": loan_details["Co_Applicant_Occupation"],
+                    "Co_Applicant_Monthly_Income": loan_details["Co_Applicant_Monthly_Income"]
+                }
+
+                input_data = pd.DataFrame([features])
+
+                prediction = education_loan_model.predict(input_data)
+
+                ai_prediction = int(prediction[0])
+
+                cursor.execute("""
+                    UPDATE loan_applications
+                    SET ai_prediction = %s
+                    WHERE id = %s
+                """, (ai_prediction, application_id))
+
+                db.commit()
+
+                application["ai_prediction"] = ai_prediction
+
+
+        # ==========================================
+        # HOME LOAN
+        # ==========================================
+
+        elif loan_type == "Home Loan":
+
+            cursor.execute("""
+                SELECT *
+                FROM home_loans
+                WHERE application_id = %s
+            """, (application_id,))
+
+            loan_details = cursor.fetchone()
+
+            if not loan_details:
+                cursor.close()
+                return "Home loan details not found"
+
+            if application["ai_prediction"] is None:
+
+                features = {
+                    "Age": loan_details["Age"],
+                    "Occupation": loan_details["Occupation"],
+                    "Employment_Type": loan_details["Employment_Type"],
+                    "Monthly_Income": loan_details["Monthly_Income"],
+                    "Employment_Business_Duration": loan_details["Employment_Business_Duration"],
+                    "Existing_Monthly_EMI": loan_details["Existing_Monthly_EMI"],
+                    "Loan_Amount": loan_details["Loan_Amount"],
+                    "Loan_Tenure": loan_details["Loan_Tenure"],
+                    "Property_Value": loan_details["Property_Value"],
+                    "Down_Payment": loan_details["Down_Payment"],
+                    "Property_Type": loan_details["Property_Type"],
+                    "Property_Location_Type": loan_details["Property_Location_Type"],
+                    "Number_of_Dependents": loan_details["Number_of_Dependents"]
+                }
+
+                input_data = pd.DataFrame([features])
+
+                prediction = home_loan_model.predict(input_data)
+
+                ai_prediction = int(prediction[0])
+
+                cursor.execute("""
+                    UPDATE loan_applications
+                    SET ai_prediction = %s
+                    WHERE id = %s
+                """, (ai_prediction, application_id))
+
+                db.commit()
+
+                application["ai_prediction"] = ai_prediction
+
+
+        # ==========================================
+        # PERSONAL LOAN
+        # ==========================================
+
+        elif loan_type == "Personal Loan":
+
+            cursor.execute("""
+                SELECT *
+                FROM personal_loans
+                WHERE application_id = %s
+            """, (application_id,))
+
+            loan_details = cursor.fetchone()
+
+            if not loan_details:
+                cursor.close()
+                return "Personal loan details not found"
+
+            if application["ai_prediction"] is None:
+
+                features = {
+                    "Age": loan_details["Age"],
+                    "Occupation": loan_details["Occupation"],
+                    "Employment_Type": loan_details["Employment_Type"],
+                    "Monthly_Income": loan_details["Monthly_Income"],
+                    "Employment_Business_Duration": loan_details["Employment_Business_Duration"],
+                    "Existing_Monthly_EMI": loan_details["Existing_Monthly_EMI"],
+                    "Loan_Amount": loan_details["Loan_Amount"],
+                    "Loan_Tenure": loan_details["Loan_Tenure"],
+                    "Loan_Purpose": loan_details["Loan_Purpose"],
+                    "Number_of_Dependents": loan_details["Number_of_Dependents"],
+                    "Monthly_Household_Expenses": loan_details["Monthly_Household_Expenses"],
+                    "Monthly_Savings_Surplus": loan_details["Monthly_Savings_Surplus"],
+                    "Residence_Type": loan_details["Residence_Type"],
+                    "Employment_Business_Stability": loan_details["Employment_Business_Stability"]
+                }
+
+                input_data = pd.DataFrame([features])
+
+                prediction = personal_loan_model.predict(input_data)
+
+                ai_prediction = int(prediction[0])
+
+                cursor.execute("""
+                    UPDATE loan_applications
+                    SET ai_prediction = %s
+                    WHERE id = %s
+                """, (ai_prediction, application_id))
+
+                db.commit()
+
+                application["ai_prediction"] = ai_prediction
+
+
+        # ==========================================
+        # VEHICLE LOAN
+        # ==========================================
+
+        elif loan_type == "Vehicle Loan":
+
+            cursor.execute("""
+                SELECT *
+                FROM vehicle_loans
+                WHERE application_id = %s
+            """, (application_id,))
+
+            loan_details = cursor.fetchone()
+
+            if not loan_details:
+                cursor.close()
+                return "Vehicle loan details not found"
+
+            if application["ai_prediction"] is None:
+
+                features = {
+                    "Age": loan_details["Age"],
+                    "Occupation": loan_details["Occupation"],
+                    "Employment_Type": loan_details["Employment_Type"],
+                    "Monthly_Income": loan_details["Monthly_Income"],
+                    "Employment_Business_Duration": loan_details["Employment_Business_Duration"],
+                    "Existing_Monthly_EMI": loan_details["Existing_Monthly_EMI"],
+                    "Vehicle_Type": loan_details["Vehicle_Type"],
+                    "Vehicle_Condition": loan_details["Vehicle_Condition"],
+                    "Vehicle_Price": loan_details["Vehicle_Price"],
+                    "Down_Payment": loan_details["Down_Payment"],
+                    "Loan_Amount": loan_details["Loan_Amount"],
+                    "Loan_Tenure": loan_details["Loan_Tenure"],
+                    "Vehicle_Usage": loan_details["Vehicle_Usage"],
+                    "Number_of_Dependents": loan_details["Number_of_Dependents"]
+                }
+
+                input_data = pd.DataFrame([features])
+
+                prediction = vehicle_loan_model.predict(input_data)
+
+                ai_prediction = int(prediction[0])
+
+                cursor.execute("""
+                    UPDATE loan_applications
+                    SET ai_prediction = %s
+                    WHERE id = %s
+                """, (ai_prediction, application_id))
+
+                db.commit()
+
+                application["ai_prediction"] = ai_prediction
+
+        else:
+            cursor.close()
+            return "Invalid loan type"
+
         cursor.close()
 
-        return redirect(
-            url_for(
-                "manager_application",
-                application_id=application_id
-            )
+        return render_template(
+            "manager_application.html",
+            application=application,
+            loan_details=loan_details,
+            manager_name=session["manager_name"]
         )
 
     except mysql.connector.Error as error:
-
         db.rollback()
-
         return "Database Error: " + str(error)
-    
+
+    except Exception as error:
+        return "ML/Processing Error: " + str(error)
     
 # ================= MANAGER LOGOUT =================
 
